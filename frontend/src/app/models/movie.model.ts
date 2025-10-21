@@ -3,5 +3,5 @@ export interface Movie {
   name: string;
   realisator: string;
   rating: number;
-  duration: string;
+  duration: string | null;
 }

@@ -49,7 +49,12 @@ export class MoviesComponent implements OnInit {
     );
   }
 
-  formatDuration(duration: string): string {
+  formatDuration(duration: string | null): string | null {
+    // Handle null or undefined duration
+    if (!duration) {
+      return null;
+    }
+
     // Convert "02:22:00" format to "2h 22m"
     const parts = duration.split(':');
     const hours = parseInt(parts[0], 10);

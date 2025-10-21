@@ -28,7 +28,11 @@
         <p class="director">
           <strong>Director:</strong> {{ movie.realisator }}
         </p>
-        <p class="duration">
+        <p
+          *ngIf="movie.duration"
+          class="duration"
+          [class.duration-unavailable]="!movie.duration"
+        >
           <strong>Duration:</strong> {{ formatDuration(movie.duration) }}
         </p>
       </div>
