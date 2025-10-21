@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using MoviesApi.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -5,7 +8,17 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    {
+        Title = "Movies Library API",
+        Version = "v1",
+        Description = "A simple API for managing a movie library"
+    });
+});
+builder.Services.AddDbContext<MoviesContext>(opt =>
+    opt.UseInMemoryDatabase("Movies"));
 
 var app = builder.Build();
 
