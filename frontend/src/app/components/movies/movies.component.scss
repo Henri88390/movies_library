@@ -22,9 +22,29 @@
 }
 
 .movies-header p {
-  margin: 0;
+  margin: 0 0 20px 0;
   font-size: 1.1rem;
   opacity: 0.9;
+}
+
+.create-movie-btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  padding: 12px 24px;
+  border-radius: 25px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.create-movie-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .loading {
@@ -89,6 +109,18 @@
 .empty-state h2 {
   margin-bottom: 16px;
   color: #2c3e50;
+}
+
+.empty-state .create-movie-btn {
+  background: #28a745;
+  color: white;
+  border: 2px solid #28a745;
+  margin-top: 20px;
+}
+
+.empty-state .create-movie-btn:hover {
+  background: #218838;
+  border-color: #218838;
 }
 
 @media (max-width: 768px) {

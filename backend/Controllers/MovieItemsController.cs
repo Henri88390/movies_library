@@ -140,22 +140,22 @@ namespace backend.Controllers
             return NoContent();
         }
 
-        // POST: api/MovieItems
+        // POST: api/movies/movies
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Movie>> PostMovie(MoviePostDto movieDto)
+        [HttpPost("movies")]
+        public async Task<ActionResult<MovieGetDTO>> PostMovie(MoviePostDto movieDto)
         {
             var movie = new Movie
             {
                 Name = movieDto.Name,
                 Realisator = movieDto.Realisator,
                 Rating = movieDto.Rating,
-                Duration = movieDto.Duration
+                Duration = movieDto.Duration ?? TimeSpan.Zero
             };
 
             _context.MoviesItems.Add(movie);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetMovie), new { id = movie.Id }, movie);
+            return CreatedAtAction(nameof(GetMovie), new { id = movie.Id }, movie.MovieItemToDTO());
         }
 
         // DELETE: api/MovieItems/5

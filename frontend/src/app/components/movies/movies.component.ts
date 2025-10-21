@@ -4,11 +4,12 @@ import { Movie } from '../../models/movie.model';
 import { MovieService } from '../../services/movie.service';
 import { MovieCardComponent } from '../movie-card/movie-card.component';
 import { MovieEditModalComponent } from '../movie-edit-modal/movie-edit-modal.component';
+import { MovieCreateModalComponent } from '../movie-create-modal/movie-create-modal.component';
 
 @Component({
   selector: 'app-movies',
   standalone: true,
-  imports: [CommonModule, MovieCardComponent, MovieEditModalComponent],
+  imports: [CommonModule, MovieCardComponent, MovieEditModalComponent, MovieCreateModalComponent],
   templateUrl: './movies.component.html',
   styleUrl: './movies.component.scss',
 })
@@ -16,7 +17,8 @@ export class MoviesComponent implements OnInit {
   movies: Movie[] = [];
   loading = true;
   error: string | null = null;
-  isModalOpen = false;
+  isEditModalOpen = false;
+  isCreateModalOpen = false;
   currentMovie: Movie | null = null;
 
   constructor(private movieService: MovieService) {}
@@ -26,13 +28,25 @@ export class MoviesComponent implements OnInit {
   }
 
   handleCloseModal() {
-    this.isModalOpen = false;
+    this.isEditModalOpen = false;
     this.currentMovie = null;
   }
 
+  handleCloseCreateModal() {
+    this.isCreateModalOpen = false;
+  }
+
   handleCardClick(movie: Movie) {
-    this.isModalOpen = true;
+    this.isEditModalOpen = true;
     this.currentMovie = movie;
+  }
+
+  handleCreateMovie() {
+    this.isCreateModalOpen = true;
+  }
+
+  handleMovieCreated(newMovie: Movie) {
+    this.movies = [...this.movies, newMovie];
   }
 
   handleMovieUpdated(updatedMovie: Movie) {

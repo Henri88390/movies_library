@@ -30,15 +30,15 @@ namespace MoviesApi.Models
         [StringLength(200, MinimumLength = 1, ErrorMessage = "Movie name must be between 1 and 200 characters")]
         public required string Name { get; set; }
 
+        [Required]
         [StringLength(100, ErrorMessage = "Director name cannot exceed 100 characters")]
-        public string? Realisator { get; set; }
+        public required string Realisator { get; set; }
 
         [Required]
         [Range(1, 10, ErrorMessage = "Rating must be between 1 and 10")]
         public required int Rating { get; set; }
 
-        [Required]
-        public required TimeSpan Duration { get; set; }
+        public TimeSpan? Duration { get; set; }
     }
 
     public class MoviePatchDto

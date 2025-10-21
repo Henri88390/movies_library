@@ -1,13 +1,10 @@
 <div class="movies-container">
-  <app-movie-edit-modal
-    [isOpen]="isModalOpen"
-    [movie]="currentMovie"
-    (movieUpdated)="handleMovieUpdated($event)"
-    (closeModal)="handleCloseModal()"
-  />
   <header class="movies-header">
     <h1>🎬 Movies Library</h1>
     <p>Discover and explore your favorite movies</p>
+    <button class="create-movie-btn" (click)="handleCreateMovie()">
+      ➕ Add New Movie
+    </button>
   </header>
 
   <div class="loading" *ngIf="loading">
@@ -32,5 +29,23 @@
   <div class="empty-state" *ngIf="!loading && !error && movies.length === 0">
     <h2>📽️ No movies found</h2>
     <p>Your movie library is empty. Add some movies to get started!</p>
+    <button class="create-movie-btn" (click)="handleCreateMovie()">
+      ➕ Create Your First Movie
+    </button>
   </div>
+
+  <!-- Edit Modal -->
+  <app-movie-edit-modal
+    [isOpen]="isEditModalOpen"
+    [movie]="currentMovie"
+    (movieUpdated)="handleMovieUpdated($event)"
+    (closeModal)="handleCloseModal()"
+  />
+
+  <!-- Create Modal -->
+  <app-movie-create-modal
+    [isOpen]="isCreateModalOpen"
+    (movieCreated)="handleMovieCreated($event)"
+    (closeModal)="handleCloseCreateModal()"
+  />
 </div>
