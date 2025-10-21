@@ -89,7 +89,7 @@
 }
 
 .star::before {
-  content: '★';
+  content: "★";
   position: absolute;
   left: 0;
   top: 0;
@@ -120,7 +120,6 @@
 .movie-card.uneven .star {
   transform: scale(1.02);
 }
-
 
 .rating-text {
   font-size: 0.9rem;
