@@ -2,10 +2,16 @@
   <div class="movie-header">
     <h3>{{ movie.name }}</h3>
     <div class="movie-actions">
-      <div class="rating">
-        <span class="stars">{{ getStars(movie.rating) }}</span>
-        <span class="rating-text">{{ movie.rating }}/10</span>
-      </div>
+        <div class="rating" [class.uneven]="movie.rating % 2 !== 0">
+          <span class="stars">
+            <span class="star-row">
+              <ng-container *ngFor="let s of getStars(movie.rating)">
+                <span class="star" [ngClass]="s"></span>
+              </ng-container>
+            </span>
+          </span>
+          <span class="rating-text">{{ movie.rating }}/10</span>
+        </div>
       <button
         class="delete-btn"
         (click)="onDeleteClick($event)"

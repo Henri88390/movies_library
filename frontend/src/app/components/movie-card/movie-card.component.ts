@@ -7,21 +7,34 @@ import { Movie } from '../../models/movie.model';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './movie-card.component.html',
-  styleUrl: './movie-card.component.scss',
+  styleUrls: ['./movie-card.component.scss'],
 })
 export class MovieCardComponent {
   @Input({ required: true }) movie!: Movie;
   @Output() cardClick = new EventEmitter<Movie>();
   @Output() deleteClick = new EventEmitter<Movie>();
 
-  getStars(rating: number): string {
+  /**
+   * Return an array of class names for the 5 star slots: 'full' | 'half' | 'empty'
+   * The backend rating is on a 0-10 scale; we render 5 stars. An odd rating
+   * (e.g. 7) becomes 3 full + 1 half (3.5 stars). Even ratings map cleanly.
+   */
+  getStars(rating: number): string[] {
     const fullStars = Math.floor(rating / 2);
-    const halfStar = rating % 2 >= 1;
-    const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+    const hasHalf = rating % 2 === 1; // uneven rating indicates a half
+    const emptyStars = 5 - fullStars - (hasHalf ? 1 : 0);
 
-    return (
-      '★'.repeat(fullStars) + (halfStar ? '☆' : '') + '☆'.repeat(emptyStars)
-    );
+    const stars: string[] = [];
+    for (let i = 0; i < fullStars; i++) {
+      stars.push('full');
+    }
+    if (hasHalf) {
+      stars.push('half');
+    }
+    for (let i = 0; i < emptyStars; i++) {
+      stars.push('empty');
+    }
+    return stars;
   }
 
   formatDuration(duration: string | null): string | null {
