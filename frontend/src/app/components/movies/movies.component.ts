@@ -4,6 +4,7 @@ import { Movie } from '../../models/movie.model';
 import { MovieService } from '../../services/movie.service';
 import { MovieCardComponent } from '../movie-card/movie-card.component';
 import { MovieCreateModalComponent } from '../movie-create-modal/movie-create-modal.component';
+import { MovieDeleteModalComponent } from '../movie-delete-modal/movie-delete-modal.component';
 import { MovieEditModalComponent } from '../movie-edit-modal/movie-edit-modal.component';
 
 @Component({
@@ -14,6 +15,7 @@ import { MovieEditModalComponent } from '../movie-edit-modal/movie-edit-modal.co
     MovieCardComponent,
     MovieEditModalComponent,
     MovieCreateModalComponent,
+    MovieDeleteModalComponent,
   ],
   templateUrl: './movies.component.html',
   styleUrl: './movies.component.scss',
@@ -24,7 +26,9 @@ export class MoviesComponent implements OnInit {
   error: string | null = null;
   isEditModalOpen = false;
   isCreateModalOpen = false;
+  isDeleteModalOpen = false;
   currentMovie: Movie | null = null;
+  movieToDelete: Movie | null = null;
 
   constructor(private movieService: MovieService) {}
 
@@ -52,6 +56,20 @@ export class MoviesComponent implements OnInit {
 
   handleMovieCreated(newMovie: Movie) {
     this.movies = [...this.movies, newMovie];
+  }
+
+  handleDeleteClick(movie: Movie) {
+    this.movieToDelete = movie;
+    this.isDeleteModalOpen = true;
+  }
+
+  handleCloseDeleteModal() {
+    this.isDeleteModalOpen = false;
+    this.movieToDelete = null;
+  }
+
+  handleMovieDeleted(movieId: number) {
+    this.movies = this.movies.filter((m) => m.id !== movieId);
   }
 
   handleMovieUpdated(updatedMovie: Movie) {

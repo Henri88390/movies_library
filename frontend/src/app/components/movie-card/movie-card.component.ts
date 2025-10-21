@@ -12,6 +12,7 @@ import { Movie } from '../../models/movie.model';
 export class MovieCardComponent {
   @Input({ required: true }) movie!: Movie;
   @Output() cardClick = new EventEmitter<Movie>();
+  @Output() deleteClick = new EventEmitter<Movie>();
 
   getStars(rating: number): string {
     const fullStars = Math.floor(rating / 2);
@@ -45,5 +46,10 @@ export class MovieCardComponent {
 
   onCardClick(): void {
     this.cardClick.emit(this.movie);
+  }
+
+  onDeleteClick(event: Event): void {
+    event.stopPropagation(); // Prevent card click when delete button is clicked
+    this.deleteClick.emit(this.movie);
   }
 }

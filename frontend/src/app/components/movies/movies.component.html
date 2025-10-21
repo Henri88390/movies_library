@@ -21,6 +21,7 @@
     <app-movie-card
       *ngFor="let movie of movies"
       (cardClick)="handleCardClick(movie)"
+      (deleteClick)="handleDeleteClick(movie)"
       [movie]="movie"
     >
     </app-movie-card>
@@ -47,5 +48,12 @@
     [isOpen]="isCreateModalOpen"
     (movieCreated)="handleMovieCreated($event)"
     (closeModal)="handleCloseCreateModal()"
+  />
+
+  <app-movie-delete-modal
+    [isOpen]="isDeleteModalOpen"
+    [movie]="movieToDelete"
+    (movieDeleted)="handleMovieDeleted($event)"
+    (closeModal)="handleCloseDeleteModal()"
   />
 </div>
