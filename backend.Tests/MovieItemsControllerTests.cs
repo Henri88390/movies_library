@@ -16,14 +16,14 @@ namespace backend.Tests;
 public class TestWebApplicationFactory : WebApplicationFactory<Program>
 {
     private readonly string _databaseName = $"TestDb_{Guid.NewGuid()}";
-    
+
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.ConfigureServices(services =>
         {
             // Create a new service collection and only copy non-EF services
             var newServices = new ServiceCollection();
-            
+
             foreach (var service in services)
             {
                 // Skip all EF Core and SQLite related services
@@ -33,23 +33,23 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>
                     service.ServiceType == typeof(DbContextOptions<MoviesContext>) ||
                     service.ServiceType == typeof(DbContextOptions))
                     continue;
-                    
+
                 newServices.Add(service);
             }
-            
+
             // Add fresh in-memory database with consistent name
             newServices.AddDbContext<MoviesContext>(options =>
             {
                 options.UseInMemoryDatabase(_databaseName);
             });
-            
+
             services.Clear();
             foreach (var service in newServices)
             {
                 services.Add(service);
             }
         });
-        
+
         builder.UseEnvironment("Testing");
     }
 }

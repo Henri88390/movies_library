@@ -26,10 +26,10 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<MoviesContext>();
-    
+
     // Ensure database is created
     context.Database.EnsureCreated();
-    
+
     // Seed data if the database is empty
     if (!context.MoviesItems.Any())
     {
@@ -92,7 +92,7 @@ using (var scope = app.Services.CreateScope())
                 Duration = TimeSpan.FromMinutes(146)
             }
         };
-        
+
         context.MoviesItems.AddRange(movies);
         context.SaveChanges();
     }
