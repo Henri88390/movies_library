@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Movie } from '../../models/movie.model';
 
 @Component({
@@ -11,6 +11,7 @@ import { Movie } from '../../models/movie.model';
 })
 export class MovieCardComponent {
   @Input({ required: true }) movie!: Movie;
+  @Output() cardClick = new EventEmitter<Movie>();
 
   getStars(rating: number): string {
     const fullStars = Math.floor(rating / 2);
@@ -40,5 +41,9 @@ export class MovieCardComponent {
     } else {
       return `${hours}h ${minutes}m`;
     }
+  }
+
+  onCardClick(): void {
+    this.cardClick.emit(this.movie);
   }
 }

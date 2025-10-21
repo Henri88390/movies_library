@@ -1,0 +1,96 @@
+<div class="modal-overlay" *ngIf="isOpen" (click)="onBackdropClick($event)">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>🎬 Edit Movie</h2>
+      <button class="close-btn" (click)="onCancel()" type="button">
+        &times;
+      </button>
+    </div>
+
+    <form [formGroup]="editForm" (ngSubmit)="onSave()" class="modal-form">
+      <div class="form-group">
+        <label for="movieName">Movie Name *</label>
+        <input
+          id="movieName"
+          type="text"
+          formControlName="name"
+          class="form-input"
+          [class.error]="getFieldError('name')"
+          placeholder="Enter movie name"
+        />
+        <div class="field-error" *ngIf="getFieldError('name')">
+          {{ getFieldError("name") }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="director">Director *</label>
+        <input
+          id="director"
+          type="text"
+          formControlName="realisator"
+          class="form-input"
+          [class.error]="getFieldError('realisator')"
+          placeholder="Enter director name"
+        />
+        <div class="field-error" *ngIf="getFieldError('realisator')">
+          {{ getFieldError("realisator") }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="rating">Rating *</label>
+        <input
+          id="rating"
+          type="number"
+          formControlName="rating"
+          min="0"
+          max="10"
+          step="0.1"
+          class="form-input"
+          [class.error]="getFieldError('rating')"
+          placeholder="0-10"
+        />
+        <div class="field-error" *ngIf="getFieldError('rating')">
+          {{ getFieldError("rating") }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="duration">Duration</label>
+        <input
+          id="duration"
+          type="time"
+          formControlName="duration"
+          class="form-input"
+        />
+        <small class="form-help"
+          >Optional: Movie duration in hours and minutes</small
+        >
+      </div>
+
+      <div class="error" *ngIf="error">
+        <p>❌ {{ error }}</p>
+      </div>
+
+      <div class="modal-actions">
+        <button
+          type="button"
+          class="btn btn-cancel"
+          (click)="onCancel()"
+          [disabled]="loading"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          class="btn btn-save"
+          [disabled]="loading || editForm.invalid"
+        >
+          <span *ngIf="loading" class="spinner"></span>
+          {{ loading ? "Saving..." : "Save Changes" }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

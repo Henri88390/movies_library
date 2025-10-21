@@ -1,4 +1,10 @@
 <div class="movies-container">
+  <app-movie-edit-modal
+    [isOpen]="isModalOpen"
+    [movie]="currentMovie"
+    (movieUpdated)="handleMovieUpdated($event)"
+    (closeModal)="handleCloseModal()"
+  />
   <header class="movies-header">
     <h1>🎬 Movies Library</h1>
     <p>Discover and explore your favorite movies</p>
@@ -15,7 +21,11 @@
   </div>
 
   <div class="movies-grid" *ngIf="!loading && !error">
-    <app-movie-card *ngFor="let movie of movies" [movie]="movie">
+    <app-movie-card
+      *ngFor="let movie of movies"
+      (cardClick)="handleCardClick(movie)"
+      [movie]="movie"
+    >
     </app-movie-card>
   </div>
 

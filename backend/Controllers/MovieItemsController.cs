@@ -44,14 +44,31 @@ namespace backend.Controllers
         // PUT: api/MovieItems/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutMovie(long id, Movie movie)
+        public async Task<ActionResult<MovieGetDTO>> PutMovie(long id, MoviePutDto movieDto)
         {
-            if (id != movie.Id)
+            var existingMovie = await _context.MoviesItems.FindAsync(id);
+            if (existingMovie == null)
             {
-                return BadRequest();
+                return NotFound();
             }
 
-            _context.Entry(movie).State = EntityState.Modified;
+            // Update the existing movie with DTO data
+            if (movieDto.Name != null)
+            {
+                existingMovie.Name = movieDto.Name;
+            }
+            if (movieDto.Realisator != null)
+            {
+                existingMovie.Realisator = movieDto.Realisator;
+            }
+            if (movieDto.Rating.HasValue)
+            {
+                existingMovie.Rating = movieDto.Rating.Value;
+            }
+            if (movieDto.Duration.HasValue)
+            {
+                existingMovie.Duration = movieDto.Duration.Value;
+            }
 
             try
             {
@@ -69,7 +86,8 @@ namespace backend.Controllers
                 }
             }
 
-            return NoContent();
+            // Return the updated movie as DTO
+            return existingMovie.MovieItemToDTO();
         }
 
         // PATCH: api/MovieItems/5
