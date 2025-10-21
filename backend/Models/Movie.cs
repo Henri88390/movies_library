@@ -27,7 +27,8 @@ namespace MoviesApi.Models
            Id = this.Id,
            Name = this.Name,
            Rating = this.Rating,
-           Realisator = this.Realisator
+           Realisator = this.Realisator,
+           Duration = this.Duration
        };
     }
 }
