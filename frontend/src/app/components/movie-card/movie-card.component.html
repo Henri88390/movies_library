@@ -1,0 +1,20 @@
+<div class="movie-card">
+  <div class="movie-header">
+    <h3>{{ movie.name }}</h3>
+    <div class="rating">
+      <span class="stars">{{ getStars(movie.rating) }}</span>
+      <span class="rating-text">{{ movie.rating }}/10</span>
+    </div>
+  </div>
+
+  <div class="movie-details">
+    <p class="director"><strong>Director:</strong> {{ movie.realisator }}</p>
+    <p
+      *ngIf="movie.duration"
+      class="duration"
+      [class.duration-unavailable]="!movie.duration"
+    >
+      <strong>Duration:</strong> {{ formatDuration(movie.duration) }}
+    </p>
+  </div>
+</div>
