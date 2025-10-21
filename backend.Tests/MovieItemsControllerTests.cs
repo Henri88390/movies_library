@@ -7,37 +7,62 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using MoviesApi.Models;
 using Xunit;
 
 namespace backend.Tests;
 
-public class MovieItemsControllerTests : IClassFixture<WebApplicationFactory<Program>>
+public class TestWebApplicationFactory : WebApplicationFactory<Program>
 {
-    private readonly WebApplicationFactory<Program> _factory;
+    private readonly string _databaseName = $"TestDb_{Guid.NewGuid()}";
+    
+    protected override void ConfigureWebHost(IWebHostBuilder builder)
+    {
+        builder.ConfigureServices(services =>
+        {
+            // Create a new service collection and only copy non-EF services
+            var newServices = new ServiceCollection();
+            
+            foreach (var service in services)
+            {
+                // Skip all EF Core and SQLite related services
+                if (service.ServiceType.Namespace?.Contains("EntityFrameworkCore") == true ||
+                    service.ServiceType.FullName?.Contains("Sqlite") == true ||
+                    service.ServiceType == typeof(MoviesContext) ||
+                    service.ServiceType == typeof(DbContextOptions<MoviesContext>) ||
+                    service.ServiceType == typeof(DbContextOptions))
+                    continue;
+                    
+                newServices.Add(service);
+            }
+            
+            // Add fresh in-memory database with consistent name
+            newServices.AddDbContext<MoviesContext>(options =>
+            {
+                options.UseInMemoryDatabase(_databaseName);
+            });
+            
+            services.Clear();
+            foreach (var service in newServices)
+            {
+                services.Add(service);
+            }
+        });
+        
+        builder.UseEnvironment("Testing");
+    }
+}
+
+public class MovieItemsControllerTests : IClassFixture<TestWebApplicationFactory>
+{
+    private readonly TestWebApplicationFactory _factory;
     private readonly HttpClient _client;
     private readonly JsonSerializerOptions _jsonOptions;
 
-    public MovieItemsControllerTests(WebApplicationFactory<Program> factory)
+    public MovieItemsControllerTests(TestWebApplicationFactory factory)
     {
-        _factory = factory.WithWebHostBuilder(builder =>
-        {
-            builder.ConfigureServices(services =>
-            {
-                // Remove the original DbContext registration
-                var descriptor = services.SingleOrDefault(
-                    d => d.ServiceType == typeof(DbContextOptions<MoviesContext>));
-                if (descriptor != null)
-                    services.Remove(descriptor);
-
-                // Add a test database
-                services.AddDbContext<MoviesContext>(options =>
-                {
-                    options.UseInMemoryDatabase("TestDatabase");
-                });
-            });
-        });
-
+        _factory = factory;
         _client = _factory.CreateClient();
         _jsonOptions = new JsonSerializerOptions
         {

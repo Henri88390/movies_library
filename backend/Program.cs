@@ -18,9 +18,85 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 builder.Services.AddDbContext<MoviesContext>(opt =>
-    opt.UseInMemoryDatabase("Movies"));
+    opt.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 var app = builder.Build();
+
+// Seed the database with initial data
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<MoviesContext>();
+    
+    // Ensure database is created
+    context.Database.EnsureCreated();
+    
+    // Seed data if the database is empty
+    if (!context.MoviesItems.Any())
+    {
+        var movies = new[]
+        {
+            new Movie
+            {
+                Name = "The Shawshank Redemption",
+                Realisator = "Frank Darabont",
+                Rating = 9,
+                Duration = TimeSpan.FromMinutes(142)
+            },
+            new Movie
+            {
+                Name = "The Godfather",
+                Realisator = "Francis Ford Coppola",
+                Rating = 9,
+                Duration = TimeSpan.FromMinutes(175)
+            },
+            new Movie
+            {
+                Name = "The Dark Knight",
+                Realisator = "Christopher Nolan",
+                Rating = 9,
+                Duration = TimeSpan.FromMinutes(152)
+            },
+            new Movie
+            {
+                Name = "Pulp Fiction",
+                Realisator = "Quentin Tarantino",
+                Rating = 8,
+                Duration = TimeSpan.FromMinutes(154)
+            },
+            new Movie
+            {
+                Name = "Forrest Gump",
+                Realisator = "Robert Zemeckis",
+                Rating = 8,
+                Duration = TimeSpan.FromMinutes(142)
+            },
+            new Movie
+            {
+                Name = "Inception",
+                Realisator = "Christopher Nolan",
+                Rating = 8,
+                Duration = TimeSpan.FromMinutes(148)
+            },
+            new Movie
+            {
+                Name = "The Matrix",
+                Realisator = "The Wachowskis",
+                Rating = 8,
+                Duration = TimeSpan.FromMinutes(136)
+            },
+            new Movie
+            {
+                Name = "Goodfellas",
+                Realisator = "Martin Scorsese",
+                Rating = 8,
+                Duration = TimeSpan.FromMinutes(146)
+            }
+        };
+        
+        context.MoviesItems.AddRange(movies);
+        context.SaveChanges();
+    }
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
