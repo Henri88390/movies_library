@@ -19,6 +19,15 @@ namespace MoviesApi.Models
          public required int Rating { get; set; }
          
         [Required]
-         public required TimeSpan Duration { get; set; }
+        public required TimeSpan Duration { get; set; }
+
+        public MovieGetDTO MovieItemToDTO() =>
+       new()
+       {
+           Id = this.Id,
+           Name = this.Name,
+           Rating = this.Rating,
+           Realisator = this.Realisator
+       };
     }
 }

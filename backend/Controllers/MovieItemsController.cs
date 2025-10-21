@@ -9,7 +9,7 @@ using MoviesApi.Models;
 
 namespace backend.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/movies")]
     [ApiController]
     public class MovieItemsController : ControllerBase
     {
@@ -21,10 +21,10 @@ namespace backend.Controllers
         }
 
         // GET: api/MovieItems
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Movie>>> GetMoviesItems()
+        [HttpGet("movies")]
+        public async Task<ActionResult<IEnumerable<MovieGetDTO>>> GetMoviesItems()
         {
-            return await _context.MoviesItems.ToListAsync();
+            return await _context.MoviesItems.Select(x => x.MovieItemToDTO()).ToListAsync();
         }
 
         // GET: api/MovieItems/5
@@ -72,11 +72,69 @@ namespace backend.Controllers
             return NoContent();
         }
 
+        // PATCH: api/MovieItems/5
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> PatchMovie(long id, MoviePatchDto movieUpdate)
+        {
+            var existingMovie = await _context.MoviesItems.FindAsync(id);
+            if (existingMovie == null)
+            {
+                return NotFound();
+            }
+
+            // Only update fields that are provided (not null)
+            if (movieUpdate.Name != null)
+            {
+                existingMovie.Name = movieUpdate.Name;
+            }
+
+            if (movieUpdate.Realisator != null)
+            {
+                existingMovie.Realisator = movieUpdate.Realisator;
+            }
+
+            if (movieUpdate.Rating.HasValue)
+            {
+                existingMovie.Rating = movieUpdate.Rating.Value;
+            }
+
+            if (movieUpdate.Duration.HasValue)
+            {
+                existingMovie.Duration = movieUpdate.Duration.Value;
+            }
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!MovieExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
         // POST: api/MovieItems
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Movie>> PostMovie(Movie movie)
+        public async Task<ActionResult<Movie>> PostMovie(MoviePostDto movieDto)
         {
+            var movie = new Movie
+            {
+                Name = movieDto.Name,
+                Realisator = movieDto.Realisator,
+                Rating = movieDto.Rating,
+                Duration = movieDto.Duration
+            };
+
             _context.MoviesItems.Add(movie);
             await _context.SaveChangesAsync();
             return CreatedAtAction(nameof(GetMovie), new { id = movie.Id }, movie);
@@ -103,4 +161,6 @@ namespace backend.Controllers
             return _context.MoviesItems.Any(e => e.Id == id);
         }
     }
+
+
 }
