@@ -2,7 +2,9 @@
   <div class="modal-content">
     <div class="modal-header">
       <h2>🎬 Create New Movie</h2>
-      <button class="close-btn" (click)="onCancel()" type="button">&times;</button>
+      <button class="close-btn" (click)="onCancel()" type="button">
+        &times;
+      </button>
     </div>
 
     <form [formGroup]="createForm" (ngSubmit)="onSave()" class="modal-form">
@@ -17,7 +19,7 @@
           placeholder="Enter movie name"
         />
         <div class="field-error" *ngIf="getFieldError('name')">
-          {{ getFieldError('name') }}
+          {{ getFieldError("name") }}
         </div>
       </div>
 
@@ -32,7 +34,7 @@
           placeholder="Enter director name"
         />
         <div class="field-error" *ngIf="getFieldError('realisator')">
-          {{ getFieldError('realisator') }}
+          {{ getFieldError("realisator") }}
         </div>
       </div>
 
@@ -50,7 +52,7 @@
           placeholder="0-10"
         />
         <div class="field-error" *ngIf="getFieldError('rating')">
-          {{ getFieldError('rating') }}
+          {{ getFieldError("rating") }}
         </div>
       </div>
 
@@ -62,7 +64,9 @@
           formControlName="duration"
           class="form-input"
         />
-        <small class="form-help">Optional: Movie duration in hours and minutes</small>
+        <small class="form-help"
+          >Optional: Movie duration in hours and minutes</small
+        >
       </div>
 
       <div class="error" *ngIf="error">
@@ -70,12 +74,21 @@
       </div>
 
       <div class="modal-actions">
-        <button type="button" class="btn btn-cancel" (click)="onCancel()" [disabled]="loading">
+        <button
+          type="button"
+          class="btn btn-cancel"
+          (click)="onCancel()"
+          [disabled]="loading"
+        >
           Cancel
         </button>
-        <button type="submit" class="btn btn-save" [disabled]="loading || createForm.invalid">
+        <button
+          type="submit"
+          class="btn btn-save"
+          [disabled]="loading || createForm.invalid"
+        >
           <span *ngIf="loading" class="spinner"></span>
-          {{ loading ? 'Creating...' : 'Create Movie' }}
+          {{ loading ? "Creating..." : "Create Movie" }}
         </button>
       </div>
     </form>

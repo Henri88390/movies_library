@@ -1,6 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { Movie } from '../../models/movie.model';
 import { MovieService } from '../../services/movie.service';
 
@@ -72,7 +77,9 @@ export class MovieCreateModalComponent implements OnInit {
       name: formValue.name,
       realisator: formValue.realisator,
       rating: formValue.rating,
-      duration: formValue.duration ? this.formatDurationForApi(formValue.duration) : null,
+      duration: formValue.duration
+        ? this.formatDurationForApi(formValue.duration)
+        : null,
     };
 
     this.movieService.createMovie(newMovie).subscribe({
@@ -96,7 +103,7 @@ export class MovieCreateModalComponent implements OnInit {
   }
 
   markAllFieldsAsTouched(): void {
-    Object.keys(this.createForm.controls).forEach(key => {
+    Object.keys(this.createForm.controls).forEach((key) => {
       this.createForm.get(key)?.markAsTouched();
     });
   }
@@ -105,10 +112,14 @@ export class MovieCreateModalComponent implements OnInit {
     const field = this.createForm.get(fieldName);
     if (field?.errors && field.touched) {
       if (field.errors['required']) {
-        return `${fieldName.charAt(0).toUpperCase() + fieldName.slice(1)} is required`;
+        return `${
+          fieldName.charAt(0).toUpperCase() + fieldName.slice(1)
+        } is required`;
       }
       if (field.errors['minlength']) {
-        return `${fieldName.charAt(0).toUpperCase() + fieldName.slice(1)} is too short`;
+        return `${
+          fieldName.charAt(0).toUpperCase() + fieldName.slice(1)
+        } is too short`;
       }
       if (field.errors['min']) {
         return 'Rating must be at least 0';

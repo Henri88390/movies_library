@@ -3,13 +3,18 @@ import { Component, OnInit } from '@angular/core';
 import { Movie } from '../../models/movie.model';
 import { MovieService } from '../../services/movie.service';
 import { MovieCardComponent } from '../movie-card/movie-card.component';
-import { MovieEditModalComponent } from '../movie-edit-modal/movie-edit-modal.component';
 import { MovieCreateModalComponent } from '../movie-create-modal/movie-create-modal.component';
+import { MovieEditModalComponent } from '../movie-edit-modal/movie-edit-modal.component';
 
 @Component({
   selector: 'app-movies',
   standalone: true,
-  imports: [CommonModule, MovieCardComponent, MovieEditModalComponent, MovieCreateModalComponent],
+  imports: [
+    CommonModule,
+    MovieCardComponent,
+    MovieEditModalComponent,
+    MovieCreateModalComponent,
+  ],
   templateUrl: './movies.component.html',
   styleUrl: './movies.component.scss',
 })
