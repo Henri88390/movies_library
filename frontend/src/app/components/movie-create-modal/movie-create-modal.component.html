@@ -40,17 +40,7 @@
 
       <div class="form-group">
         <label for="rating">Rating *</label>
-        <input
-          id="rating"
-          type="number"
-          formControlName="rating"
-          min="0"
-          max="10"
-          step="0.1"
-          class="form-input"
-          [class.error]="getFieldError('rating')"
-          placeholder="0-10"
-        />
+        <app-star-rating />
         <div class="field-error" *ngIf="getFieldError('rating')">
           {{ getFieldError("rating") }}
         </div>

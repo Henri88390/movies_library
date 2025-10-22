@@ -15,11 +15,12 @@ import {
 } from '@angular/forms';
 import { Movie } from '../../models/movie.model';
 import { MovieService } from '../../services/movie.service';
+import { StarRatingComponent } from '../star-rating/star-rating.component';
 
 @Component({
   selector: 'app-movie-edit-modal',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, StarRatingComponent],
   templateUrl: './movie-edit-modal.component.html',
   styleUrl: './movie-edit-modal.component.scss',
 })

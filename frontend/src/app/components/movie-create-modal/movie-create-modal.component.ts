@@ -8,11 +8,12 @@ import {
 } from '@angular/forms';
 import { Movie } from '../../models/movie.model';
 import { MovieService } from '../../services/movie.service';
+import { StarRatingComponent } from '../star-rating/star-rating.component';
 
 @Component({
   selector: 'app-movie-create-modal',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, StarRatingComponent],
   templateUrl: './movie-create-modal.component.html',
   styleUrl: './movie-create-modal.component.scss',
 })

@@ -1,0 +1,30 @@
+<div class="star-rating" (mouseleave)="onMouseLeave()">
+  <div class="stars-container">
+    <div
+      *ngFor="let star of stars"
+      class="star-wrapper"
+      [class.disabled]="disabled"
+      [class.readonly]="readonly"
+    >
+      <div class="star" [ngClass]="getStarClass(star)">
+        <!-- Left half of star (for half rating) -->
+        <div
+          class="star-half left"
+          (click)="onStarClick(star, true)"
+          (mouseenter)="onStarHover(star, true)"
+          [attr.title]="star * 2 - 1 + '/10'"
+        ></div>
+        <!-- Right half of star (for full rating) -->
+        <div
+          class="star-half right"
+          (click)="onStarClick(star, false)"
+          (mouseenter)="onStarHover(star, false)"
+          [attr.title]="star * 2 + '/10'"
+        ></div>
+        <!-- Star icon -->
+        <span class="star-icon">★</span>
+      </div>
+    </div>
+  </div>
+  <div class="rating-text">{{ getRatingText() }}</div>
+</div>

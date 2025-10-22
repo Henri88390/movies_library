@@ -1,0 +1,120 @@
+.star-rating {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.stars-container {
+  display: flex;
+  gap: 4px;
+}
+
+.star-wrapper {
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.star-wrapper:hover:not(.disabled):not(.readonly) {
+  transform: scale(1.1);
+}
+
+.star-wrapper.disabled,
+.star-wrapper.readonly {
+  cursor: default;
+}
+
+.star {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.star-icon {
+  font-size: 28px;
+  color: #999;
+  transition: color 0.3s ease;
+  pointer-events: none;
+  position: relative;
+  z-index: 1;
+}
+
+.star.full .star-icon {
+  color: #ffb400;
+}
+
+.star.half .star-icon {
+  background: linear-gradient(90deg, #ffb400 50%, #999 50%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.star.empty .star-icon {
+  color: #999;
+}
+
+.star-half {
+  position: absolute;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  z-index: 2;
+  cursor: pointer;
+}
+
+.star-half.left {
+  left: 0;
+}
+
+.star-half.right {
+  right: 0;
+}
+
+.rating-text {
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+  min-width: 40px;
+}
+
+/* Hover effects */
+.star-wrapper:not(.disabled):not(.readonly):hover .star-icon {
+  filter: brightness(1.05);
+}
+
+/* Disabled state */
+.star-wrapper.disabled {
+  opacity: 0.6;
+}
+
+.star-wrapper.disabled .star-icon {
+  color: #888 !important;
+}
+
+/* Interactive styles */
+@media (hover: hover) {
+  .star-half:hover {
+    background: rgba(255, 215, 0, 0.05);
+    border-radius: 4px;
+  }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .star {
+    width: 28px;
+    height: 28px;
+  }
+
+  .star-icon {
+    font-size: 24px;
+  }
+
+  .stars-container {
+    gap: 2px;
+  }
+}
