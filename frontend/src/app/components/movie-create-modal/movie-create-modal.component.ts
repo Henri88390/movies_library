@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  HostListener,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -181,6 +188,13 @@ export class MovieCreateModalComponent implements OnInit {
 
   onBackdropClick(event: Event): void {
     if (event.target === event.currentTarget) {
+      this.onCancel();
+    }
+  }
+
+  @HostListener('document:keydown.escape', ['$event'])
+  onEscapeKey(event: KeyboardEvent): void {
+    if (this.isOpen && !this.loading) {
       this.onCancel();
     }
   }

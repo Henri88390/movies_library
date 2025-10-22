@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import {
   Component,
   EventEmitter,
+  HostListener,
   Input,
   OnChanges,
   OnInit,
@@ -159,6 +160,13 @@ export class MovieEditModalComponent implements OnInit, OnChanges {
 
   onBackdropClick(event: Event): void {
     if (event.target === event.currentTarget) {
+      this.onCancel();
+    }
+  }
+
+  @HostListener('document:keydown.escape', ['$event'])
+  onEscapeKey(event: KeyboardEvent): void {
+    if (this.isOpen && !this.loading) {
       this.onCancel();
     }
   }
