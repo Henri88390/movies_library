@@ -294,6 +294,12 @@ namespace backend.Controllers
 
             try
             {
+                // Validate model state
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
                 // Parse duration if provided
                 TimeSpan parsedDuration = TimeSpan.Zero;
                 if (!string.IsNullOrEmpty(duration))

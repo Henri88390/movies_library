@@ -93,19 +93,14 @@ public class MovieItemsControllerTests : IClassFixture<TestWebApplicationFactory
     {
         // Arrange
         await ClearDatabase();
-        var movieData = new
-        {
-            name = "New Movie",
-            realisator = "Test Director",
-            rating = 9,
-            duration = "02:30:00"
-        };
-
-        var json = JsonSerializer.Serialize(movieData, _jsonOptions);
-        var content = new StringContent(json, Encoding.UTF8, "application/json");
+        var formData = new MultipartFormDataContent();
+        formData.Add(new StringContent("New Movie"), "name");
+        formData.Add(new StringContent("Test Director"), "realisator");
+        formData.Add(new StringContent("9"), "rating");
+        formData.Add(new StringContent("02:30:00"), "duration");
 
         // Act
-        var response = await _client.PostAsync("/api/movies", content);
+        var response = await _client.PostAsync("/api/movies/movies", formData);
 
         // Assert
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
@@ -124,18 +119,13 @@ public class MovieItemsControllerTests : IClassFixture<TestWebApplicationFactory
     {
         // Arrange
         await ClearDatabase();
-        var movieData = new
-        {
-            name = "Test Movie",
-            rating = 15, // Invalid: rating > 10
-            duration = "02:00:00"
-        };
-
-        var json = JsonSerializer.Serialize(movieData, _jsonOptions);
-        var content = new StringContent(json, Encoding.UTF8, "application/json");
+        var formData = new MultipartFormDataContent();
+        formData.Add(new StringContent("Test Movie"), "name");
+        formData.Add(new StringContent("15"), "rating"); // Invalid: rating > 10
+        formData.Add(new StringContent("02:00:00"), "duration");
 
         // Act
-        var response = await _client.PostAsync("/api/movies", content);
+        var response = await _client.PostAsync("/api/movies/movies", formData);
 
         // Assert
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
@@ -181,23 +171,17 @@ public class MovieItemsControllerTests : IClassFixture<TestWebApplicationFactory
         await ClearDatabase();
         var movieId = await SeedSingleMovie();
 
-        var updatedMovie = new Movie
-        {
-            Id = movieId,
-            Name = "Updated Movie",
-            Realisator = "Updated Director",
-            Rating = 10,
-            Duration = TimeSpan.FromHours(3)
-        };
-
-        var json = JsonSerializer.Serialize(updatedMovie, _jsonOptions);
-        var content = new StringContent(json, Encoding.UTF8, "application/json");
+        var formData = new MultipartFormDataContent();
+        formData.Add(new StringContent("Updated Movie"), "name");
+        formData.Add(new StringContent("Updated Director"), "realisator");
+        formData.Add(new StringContent("10"), "rating");
+        formData.Add(new StringContent("03:00:00"), "duration");
 
         // Act
-        var response = await _client.PutAsync($"/api/movies/{movieId}", content);
+        var response = await _client.PutAsync($"/api/movies/{movieId}", formData);
 
         // Assert
-        Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
 
     [Fact]
