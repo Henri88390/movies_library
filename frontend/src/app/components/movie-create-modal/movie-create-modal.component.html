@@ -40,7 +40,7 @@
 
       <div class="form-group">
         <label for="rating">Rating *</label>
-        <app-star-rating />
+        <app-star-rating [formControlName]="'rating'" />
         <div class="field-error" *ngIf="getFieldError('rating')">
           {{ getFieldError("rating") }}
         </div>
