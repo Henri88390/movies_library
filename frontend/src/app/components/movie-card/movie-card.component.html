@@ -1,28 +1,27 @@
 <div class="movie-card" (click)="onCardClick()">
+  <button
+    class="delete-btn"
+    (click)="onDeleteClick($event)"
+    title="Delete movie"
+  >
+    ×
+  </button>
+
   <div class="movie-image" *ngIf="movie.imagePath">
     <img [src]="getImageUrl(movie.imagePath)" [alt]="movie.name + ' poster'" />
   </div>
 
   <div class="movie-header">
     <h3>{{ movie.name }}</h3>
-    <div class="movie-actions">
-      <div class="rating" [class.uneven]="movie.rating % 2 !== 0">
-        <span class="stars">
-          <span class="star-row">
-            <ng-container *ngFor="let s of getStars(movie.rating)">
-              <span class="star" [ngClass]="s"></span>
-            </ng-container>
-          </span>
+    <div class="rating" [class.uneven]="movie.rating % 2 !== 0">
+      <span class="stars">
+        <span class="star-row">
+          <ng-container *ngFor="let s of getStars(movie.rating)">
+            <span class="star" [ngClass]="s"></span>
+          </ng-container>
         </span>
-        <span class="rating-text">{{ movie.rating }}/10</span>
-      </div>
-      <button
-        class="delete-btn"
-        (click)="onDeleteClick($event)"
-        title="Delete movie"
-      >
-        🗑️
-      </button>
+      </span>
+      <span class="rating-text">{{ movie.rating }}/10</span>
     </div>
   </div>
 
