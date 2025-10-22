@@ -9,6 +9,7 @@ namespace MoviesApi.Models
         public string? Realisator { get; set; }
         public int? Rating { get; set; }
         public TimeSpan? Duration { get; set; }
+        public string? ImagePath { get; set; }
     }
 
     public class MoviePutDto
@@ -23,6 +24,9 @@ namespace MoviesApi.Models
         public int? Rating { get; set; }
 
         public TimeSpan? Duration { get; set; }
+
+        [StringLength(500, ErrorMessage = "Image path cannot exceed 500 characters")]
+        public string? ImagePath { get; set; }
     }
     public class MoviePostDto
     {
@@ -39,6 +43,9 @@ namespace MoviesApi.Models
         public required int Rating { get; set; }
 
         public TimeSpan? Duration { get; set; }
+
+        [StringLength(500, ErrorMessage = "Image path cannot exceed 500 characters")]
+        public string? ImagePath { get; set; }
     }
 
     public class MoviePatchDto
@@ -53,5 +60,8 @@ namespace MoviesApi.Models
         public int? Rating { get; set; }
 
         public TimeSpan? Duration { get; set; }
+
+        [StringLength(500, ErrorMessage = "Image path cannot exceed 500 characters")]
+        public string? ImagePath { get; set; }
     }
 }

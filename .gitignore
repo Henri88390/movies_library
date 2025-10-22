@@ -256,3 +256,6 @@ logs
 *.temp
 .temp/
 .tmp/
+
+# image uploads
+backend/wwwroot/uploads/images/*.*

@@ -21,6 +21,9 @@ namespace MoviesApi.Models
         [Required]
         public required TimeSpan Duration { get; set; }
 
+        [StringLength(500, ErrorMessage = "Image path cannot exceed 500 characters")]
+        public string? ImagePath { get; set; }
+
         public MovieGetDTO MovieItemToDTO() =>
        new()
        {
@@ -28,7 +31,8 @@ namespace MoviesApi.Models
            Name = this.Name,
            Rating = this.Rating,
            Realisator = this.Realisator,
-           Duration = this.Duration
+           Duration = this.Duration,
+           ImagePath = this.ImagePath
        };
     }
 }

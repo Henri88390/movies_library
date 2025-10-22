@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using MoviesApi.Models;
+using MoviesApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +19,9 @@ builder.Services.AddSwaggerGen(c =>
         Description = "A simple API for managing a movie library"
     });
 });
+
+// Add file upload service
+builder.Services.AddScoped<IFileUploadService, FileUploadService>();
 
 // Add CORS
 builder.Services.AddCors(options =>
@@ -119,6 +124,14 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// Configure static file serving for uploads directory
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(
+        Path.Combine(Directory.GetCurrentDirectory(), "uploads")),
+    RequestPath = "/uploads"
+});
 
 // Enable CORS
 app.UseCors("AllowAngularApp");
