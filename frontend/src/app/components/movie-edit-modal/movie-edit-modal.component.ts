@@ -205,6 +205,11 @@ export class MovieEditModalComponent implements OnInit, OnChanges {
 
   getCurrentImageUrl(): string {
     if (this.currentImagePath) {
+      // If it's already a full URL (starts with http/https), return as-is
+      if (this.currentImagePath.startsWith('http://') || this.currentImagePath.startsWith('https://')) {
+        return this.currentImagePath;
+      }
+      // Otherwise, it's a local path - prepend the backend URL
       return `http://localhost:5176${this.currentImagePath}`;
     }
     return '';

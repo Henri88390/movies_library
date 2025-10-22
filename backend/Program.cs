@@ -58,56 +58,64 @@ using (var scope = app.Services.CreateScope())
                 Name = "The Shawshank Redemption",
                 Realisator = "Frank Darabont",
                 Rating = 9,
-                Duration = TimeSpan.FromMinutes(142)
+                Duration = TimeSpan.FromMinutes(142),
+                ImagePath = "https://m.media-amazon.com/images/M/MV5BNDE3ODcxYzMtY2YzZC00NmNlLWJiNDMtZDViZWM2MzIxZDYwXkEyXkFqcGdeQXVyNjAwNDUxODI@._V1_SX300.jpg"
             },
             new Movie
             {
                 Name = "The Godfather",
                 Realisator = "Francis Ford Coppola",
                 Rating = 9,
-                Duration = TimeSpan.FromMinutes(175)
+                Duration = TimeSpan.FromMinutes(175),
+                ImagePath = "https://image.tmdb.org/t/p/w500/3bhkrj58Vtu7enYsRolD1fZdja1.jpg"
             },
             new Movie
             {
                 Name = "The Dark Knight",
                 Realisator = "Christopher Nolan",
                 Rating = 9,
-                Duration = TimeSpan.FromMinutes(152)
+                Duration = TimeSpan.FromMinutes(152),
+                ImagePath = "https://m.media-amazon.com/images/M/MV5BMTMxNTMwODM0NF5BMl5BanBnXkFtZTcwODAyMTk2Mw@@._V1_SX300.jpg"
             },
             new Movie
             {
                 Name = "Pulp Fiction",
                 Realisator = "Quentin Tarantino",
                 Rating = 8,
-                Duration = TimeSpan.FromMinutes(154)
+                Duration = TimeSpan.FromMinutes(154),
+                ImagePath = "https://m.media-amazon.com/images/M/MV5BNGNhMDIzZTUtNTBlZi00MTRlLWFjM2ItYzViMjE3YzI5MjljXkEyXkFqcGdeQXVyNzkwMjQ5NzM@._V1_SX300.jpg"
             },
             new Movie
             {
                 Name = "Forrest Gump",
                 Realisator = "Robert Zemeckis",
                 Rating = 8,
-                Duration = TimeSpan.FromMinutes(142)
+                Duration = TimeSpan.FromMinutes(142),
+                ImagePath = "https://m.media-amazon.com/images/M/MV5BNWIwODRlZTUtY2U3ZS00Yzg1LWJhNzYtMmZiYmEyNmU1NjMzXkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_SX300.jpg"
             },
             new Movie
             {
                 Name = "Inception",
                 Realisator = "Christopher Nolan",
                 Rating = 8,
-                Duration = TimeSpan.FromMinutes(148)
+                Duration = TimeSpan.FromMinutes(148),
+                ImagePath = "https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_SX300.jpg"
             },
             new Movie
             {
                 Name = "The Matrix",
                 Realisator = "The Wachowskis",
                 Rating = 8,
-                Duration = TimeSpan.FromMinutes(136)
+                Duration = TimeSpan.FromMinutes(136),
+                ImagePath = "https://m.media-amazon.com/images/M/MV5BNzQzOTk3OTAtNDQ0Zi00ZTVkLWI0MTEtMDllZjNkYzNjNTc4L2ltYWdlXkEyXkFqcGdeQXVyNjU0OTQ0OTY@._V1_SX300.jpg"
             },
             new Movie
             {
                 Name = "Goodfellas",
                 Realisator = "Martin Scorsese",
                 Rating = 8,
-                Duration = TimeSpan.FromMinutes(146)
+                Duration = TimeSpan.FromMinutes(146),
+                ImagePath = "https://m.media-amazon.com/images/M/MV5BY2NkZjEzMDgtN2RjYy00YzM1LWI4ZmQtMjIwYjFjNmI3ZGEwXkEyXkFqcGdeQXVyNzkwMjQ5NzM@._V1_SX300.jpg"
             }
         };
 

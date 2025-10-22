@@ -67,7 +67,11 @@ export class MovieCardComponent {
   }
 
   getImageUrl(imagePath: string): string {
-    // Backend serves static files from wwwroot/uploads/images/
+    // If it's already a full URL (starts with http/https), return as-is
+    if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+      return imagePath;
+    }
+    // Otherwise, it's a local path - prepend the backend URL
     return `http://localhost:5176${imagePath}`;
   }
 }
