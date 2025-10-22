@@ -69,6 +69,65 @@
         >
       </div>
 
+      <div class="form-group">
+        <label for="imageFile">Movie Poster</label>
+
+        <!-- Current image display -->
+        <div class="current-image" *ngIf="hasCurrentImage()">
+          <label>Current Image:</label>
+          <div class="image-preview">
+            <img
+              [src]="getCurrentImageUrl()"
+              [alt]="movie?.name + ' current poster'"
+            />
+            <button
+              type="button"
+              class="remove-image-btn"
+              (click)="removeImage()"
+              title="Remove current image"
+              aria-label="Remove current image"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+
+        <!-- New image upload -->
+        <input
+          id="imageFile"
+          type="file"
+          accept="image/*"
+          class="form-input file-input"
+          (change)="onFileSelected($event)"
+        />
+        <small class="form-help"
+          >Optional: Upload a new movie poster (max 5MB)</small
+        >
+
+        <!-- New image preview -->
+        <div class="image-preview" *ngIf="imagePreview">
+          <label>New Image Preview:</label>
+          <img [src]="imagePreview" alt="New movie poster preview" />
+          <button
+            type="button"
+            class="remove-image-btn"
+            (click)="selectedFile = null; imagePreview = null"
+            title="Remove new image"
+            aria-label="Remove new image"
+          >
+            ✕
+          </button>
+        </div>
+
+        <!-- Remove current image indicator -->
+        <div
+          class="remove-indicator"
+          *ngIf="removeCurrentImage && !imagePreview"
+        >
+          <p>✅ Current image will be removed when you save</p>
+        </div>
+      </div>
+
       <div class="error" *ngIf="error">
         <p>❌ {{ error }}</p>
       </div>

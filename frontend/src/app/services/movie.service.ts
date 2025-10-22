@@ -36,8 +36,34 @@ export class MovieService {
     return this.http.post<Movie>(`${this.apiUrl}/movies`, formData);
   }
 
-  updateMovie(id: number, movie: Partial<Movie>): Observable<Movie> {
-    return this.http.put<Movie>(`${this.apiUrl}/${id}`, movie);
+  updateMovie(
+    id: number,
+    movie: Partial<Movie>,
+    imageFile?: File,
+    removeImage?: boolean
+  ): Observable<Movie> {
+    const formData = new FormData();
+
+    if (movie.name !== undefined) {
+      formData.append('name', movie.name);
+    }
+    if (movie.realisator !== undefined) {
+      formData.append('realisator', movie.realisator);
+    }
+    if (movie.rating !== undefined) {
+      formData.append('rating', movie.rating.toString());
+    }
+    if (movie.duration !== undefined && movie.duration !== null) {
+      formData.append('duration', movie.duration);
+    }
+    if (imageFile) {
+      formData.append('image', imageFile);
+    }
+    if (removeImage) {
+      formData.append('removeImage', 'true');
+    }
+
+    return this.http.put<Movie>(`${this.apiUrl}/${id}`, formData);
   }
 
   deleteMovie(id: number): Observable<void> {

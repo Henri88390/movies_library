@@ -32,6 +32,10 @@ export class MovieEditModalComponent implements OnInit, OnChanges {
   editForm: FormGroup;
   loading = false;
   error: string | null = null;
+  selectedFile: File | null = null;
+  imagePreview: string | null = null;
+  currentImagePath: string | null = null;
+  removeCurrentImage = false;
 
   constructor(
     private movieService: MovieService,
@@ -69,6 +73,11 @@ export class MovieEditModalComponent implements OnInit, OnChanges {
         rating: this.movie.rating,
         duration: this.formatDurationForInput(this.movie.duration),
       });
+      this.currentImagePath = this.movie.imagePath || null;
+      this.selectedFile = null;
+      this.imagePreview = null;
+      this.removeCurrentImage = false;
+      this.error = null;
     }
   }
 
@@ -91,18 +100,25 @@ export class MovieEditModalComponent implements OnInit, OnChanges {
         : null,
     };
 
-    this.movieService.updateMovie(this.movie.id, updatedMovie).subscribe({
-      next: (updated) => {
-        this.movieUpdated.emit(updated);
-        this.onCancel();
-        this.loading = false;
-      },
-      error: (err) => {
-        console.error('Error updating movie:', err);
-        this.error = 'Failed to update movie. Please try again.';
-        this.loading = false;
-      },
-    });
+    this.movieService
+      .updateMovie(
+        this.movie.id,
+        updatedMovie,
+        this.selectedFile || undefined,
+        this.removeCurrentImage
+      )
+      .subscribe({
+        next: (updated) => {
+          this.movieUpdated.emit(updated);
+          this.onCancel();
+          this.loading = false;
+        },
+        error: (err) => {
+          console.error('Error updating movie:', err);
+          this.error = 'Failed to update movie. Please try again.';
+          this.loading = false;
+        },
+      });
   }
 
   onCancel(): void {
@@ -144,6 +160,58 @@ export class MovieEditModalComponent implements OnInit, OnChanges {
     if (event.target === event.currentTarget) {
       this.onCancel();
     }
+  }
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        this.error = 'Please select a valid image file';
+        return;
+      }
+
+      // Validate file size (5MB limit)
+      if (file.size > 5 * 1024 * 1024) {
+        this.error = 'Image file size must be less than 5MB';
+        return;
+      }
+
+      this.selectedFile = file;
+      this.removeCurrentImage = false;
+      this.error = null;
+
+      // Create preview
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.imagePreview = reader.result as string;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  removeImage(): void {
+    this.selectedFile = null;
+    this.imagePreview = null;
+    this.removeCurrentImage = true;
+    // Reset the file input
+    const fileInput = document.getElementById('imageFile') as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = '';
+    }
+  }
+
+  getCurrentImageUrl(): string {
+    if (this.currentImagePath) {
+      return `http://localhost:5176${this.currentImagePath}`;
+    }
+    return '';
+  }
+
+  hasCurrentImage(): boolean {
+    return !!(this.currentImagePath && !this.removeCurrentImage);
   }
 
   formatDurationForInput(duration: string | null): string {
