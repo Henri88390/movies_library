@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -49,59 +50,179 @@ namespace backend.Controllers
         // PUT: api/MovieItems/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<ActionResult<MovieGetDTO>> PutMovie(long id, MoviePutDto movieDto)
+        public async Task<ActionResult<MovieGetDTO>> PutMovie(long id,
+            [FromForm] string? name = null,
+            [FromForm] string? realisator = null,
+            [FromForm] int? rating = null,
+            [FromForm] string? duration = null,
+            [FromForm] IFormFile? image = null,
+            [FromForm] bool? removeImage = false)
         {
-            var existingMovie = await _context.MoviesItems.FindAsync(id);
-            if (existingMovie == null)
-            {
-                return NotFound();
-            }
-
-            // Update the existing movie with DTO data
-            if (movieDto.Name != null)
-            {
-                existingMovie.Name = movieDto.Name;
-            }
-            if (movieDto.Realisator != null)
-            {
-                existingMovie.Realisator = movieDto.Realisator;
-            }
-            if (movieDto.Rating.HasValue)
-            {
-                existingMovie.Rating = movieDto.Rating.Value;
-            }
-            if (movieDto.Duration.HasValue)
-            {
-                existingMovie.Duration = movieDto.Duration.Value;
-            }
-            if (movieDto.ImagePath != null)
-            {
-                // Delete old image if it exists
-                if (!string.IsNullOrEmpty(existingMovie.ImagePath))
-                {
-                    _fileUploadService.DeleteImage(existingMovie.ImagePath);
-                }
-                existingMovie.ImagePath = movieDto.ImagePath;
-            }
+            _logger.LogInformation("Starting movie update: Id={MovieId}, Name={MovieName}, HasImage={HasImage}, RemoveImage={RemoveImage}",
+                id, name, image != null, removeImage);
 
             try
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!MovieExists(id))
+                var existingMovie = await _context.MoviesItems.FindAsync(id);
+                if (existingMovie == null)
                 {
                     return NotFound();
                 }
+
+                // Update the existing movie with form data
+                if (!string.IsNullOrEmpty(name))
+                {
+                    existingMovie.Name = name;
+                }
+                if (!string.IsNullOrEmpty(realisator))
+                {
+                    existingMovie.Realisator = realisator;
+                }
+                if (rating.HasValue)
+                {
+                    existingMovie.Rating = rating.Value;
+                }
+                if (!string.IsNullOrEmpty(duration))
+                {
+                    if (TimeSpan.TryParse(duration, out TimeSpan parsedDuration))
+                    {
+                        existingMovie.Duration = parsedDuration;
+                    }
+                    else
+                    {
+                        return BadRequest("Invalid duration format. Use HH:MM:SS format.");
+                    }
+                }
+
+                // Handle image updates
+                if (removeImage == true)
+                {
+                    // Remove existing image
+                    if (!string.IsNullOrEmpty(existingMovie.ImagePath))
+                    {
+                        _logger.LogDebug("Removing existing image: {ImagePath}", existingMovie.ImagePath);
+                        _fileUploadService.DeleteImage(existingMovie.ImagePath);
+                        existingMovie.ImagePath = null;
+                    }
+                }
+                else if (image != null)
+                {
+                    // Replace with new image
+                    _logger.LogDebug("Updating image: FileName={FileName}, Size={Size}", image.FileName, image.Length);
+
+                    // Delete old image if it exists
+                    if (!string.IsNullOrEmpty(existingMovie.ImagePath))
+                    {
+                        _fileUploadService.DeleteImage(existingMovie.ImagePath);
+                    }
+
+                    // Save new image
+                    string? imagePath = await _fileUploadService.SaveImageAsync(image);
+                    existingMovie.ImagePath = imagePath;
+                    _logger.LogDebug("New image saved: {ImagePath}", imagePath);
+                }
+
+                _logger.LogDebug("Updating movie in database");
+                await _context.SaveChangesAsync();
+
+                _logger.LogInformation("Movie updated successfully: Id={MovieId}, Name={MovieName}", existingMovie.Id, existingMovie.Name);
+                return Ok(existingMovie.MovieItemToDTO());
+            }
+            catch (InvalidOperationException ex)
+            {
+                _logger.LogWarning(ex, "Invalid operation while updating movie: Id={MovieId}. Operation: {Operation}", id, ex.Message);
+
+                // Check specific file upload errors
+                if (ex.Message.Contains("File size exceeds"))
+                {
+                    return BadRequest(new { error = "File too large", message = "Image file must be smaller than 5MB" });
+                }
+                else if (ex.Message.Contains("File type") && ex.Message.Contains("not allowed"))
+                {
+                    return BadRequest(new { error = "Invalid file type", message = "Only image files (JPG, PNG, GIF, WebP) are allowed" });
+                }
+                else if (ex.Message.Contains("Failed to save image"))
+                {
+                    return StatusCode(500, new { error = "File upload failed", message = "Failed to save the uploaded image. Please try again." });
+                }
                 else
                 {
-                    throw;
+                    return BadRequest(new { error = "Invalid operation", message = ex.Message });
                 }
             }
+            catch (UnauthorizedAccessException ex)
+            {
+                _logger.LogError(ex, "Access denied while updating movie: Id={MovieId}", id);
+                return StatusCode(500, new { error = "File system error", message = "Unable to access file storage. Please contact support." });
+            }
+            catch (DirectoryNotFoundException ex)
+            {
+                _logger.LogError(ex, "Upload directory not found while updating movie: Id={MovieId}", id);
+                return StatusCode(500, new { error = "Storage configuration error", message = "File storage is not properly configured. Please contact support." });
+            }
+            catch (IOException ex)
+            {
+                _logger.LogError(ex, "I/O error while updating movie: Id={MovieId}", id);
+                return StatusCode(500, new { error = "File system error", message = "A file system error occurred. Please try again or contact support." });
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                _logger.LogError(ex, "Concurrency conflict while updating movie: Id={MovieId}", id);
 
-            // Return the updated movie as DTO
-            return existingMovie.MovieItemToDTO();
+                // Check if the movie still exists
+                if (!MovieExists(id))
+                {
+                    return NotFound(new { error = "Movie not found", message = "The movie was deleted while you were editing it." });
+                }
+                else
+                {
+                    return Conflict(new { error = "Concurrency conflict", message = "The movie was modified by another user. Please refresh and try again." });
+                }
+            }
+            catch (DbUpdateException ex)
+            {
+                _logger.LogError(ex, "Database error while updating movie: Id={MovieId}. InnerException: {InnerException}",
+                    id, ex.InnerException?.Message);
+
+                // Check for specific database constraint violations
+                if (ex.InnerException?.Message?.Contains("UNIQUE constraint") == true)
+                {
+                    return Conflict(new { error = "Duplicate data", message = "A movie with this information already exists." });
+                }
+                else if (ex.InnerException?.Message?.Contains("CHECK constraint") == true)
+                {
+                    return BadRequest(new { error = "Invalid data", message = "The provided data violates database constraints." });
+                }
+                else if (ex.InnerException?.Message?.Contains("FOREIGN KEY constraint") == true)
+                {
+                    return BadRequest(new { error = "Reference error", message = "The movie references data that no longer exists." });
+                }
+                else
+                {
+                    return StatusCode(500, new { error = "Database error", message = "A database error occurred while updating the movie." });
+                }
+            }
+            catch (ArgumentException ex)
+            {
+                _logger.LogWarning(ex, "Invalid argument while updating movie: Id={MovieId}", id);
+                return BadRequest(new { error = "Invalid input", message = ex.Message });
+            }
+            catch (TimeoutException ex)
+            {
+                _logger.LogError(ex, "Timeout while updating movie: Id={MovieId}", id);
+                return StatusCode(408, new { error = "Request timeout", message = "The operation took too long to complete. Please try again." });
+            }
+            catch (OutOfMemoryException ex)
+            {
+                _logger.LogCritical(ex, "Out of memory while updating movie: Id={MovieId}", id);
+                return StatusCode(507, new { error = "Server overloaded", message = "The server is currently overloaded. Please try again later." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error while updating movie: Id={MovieId}. Exception Type: {ExceptionType}, Message: {Message}",
+                    id, ex.GetType().Name, ex.Message);
+                return StatusCode(500, new { error = "Unexpected error", message = "An unexpected error occurred while updating the movie. Please try again or contact support." });
+            }
         }
 
         // PATCH: api/MovieItems/5

@@ -17,11 +17,42 @@ namespace MoviesApi.Services
 
         public FileUploadService(IWebHostEnvironment environment, ILogger<FileUploadService> logger)
         {
-            _uploadsFolder = Path.Combine(environment.WebRootPath ?? environment.ContentRootPath, "uploads", "images");
             _logger = logger;
-            
-            // Ensure the uploads directory exists
-            Directory.CreateDirectory(_uploadsFolder);
+
+            // Determine the base path for uploads
+            string basePath;
+            if (!string.IsNullOrEmpty(environment.WebRootPath))
+            {
+                basePath = environment.WebRootPath;
+                _logger.LogDebug("Using WebRootPath for uploads: {WebRootPath}", basePath);
+            }
+            else
+            {
+                basePath = environment.ContentRootPath;
+                _logger.LogDebug("WebRootPath is null, using ContentRootPath for uploads: {ContentRootPath}", basePath);
+            }
+
+            _uploadsFolder = Path.Combine(basePath, "uploads", "images");
+            _logger.LogInformation("Uploads folder path: {UploadsFolder}", _uploadsFolder);
+
+            try
+            {
+                // Ensure the uploads directory exists
+                if (!Directory.Exists(_uploadsFolder))
+                {
+                    Directory.CreateDirectory(_uploadsFolder);
+                    _logger.LogInformation("Created uploads directory: {UploadsFolder}", _uploadsFolder);
+                }
+                else
+                {
+                    _logger.LogDebug("Uploads directory already exists: {UploadsFolder}", _uploadsFolder);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to create uploads directory: {UploadsFolder}", _uploadsFolder);
+                throw new InvalidOperationException($"Could not create uploads directory at {_uploadsFolder}", ex);
+            }
         }
 
         public async Task<string?> SaveImageAsync(IFormFile? imageFile)

@@ -125,13 +125,20 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// Configure static file serving for uploads directory
-app.UseStaticFiles(new StaticFileOptions
+// Enable default static file serving for wwwroot
+app.UseStaticFiles();
+
+// Configure static file serving for uploads directory in wwwroot
+var wwwrootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+var uploadsPath = Path.Combine(wwwrootPath, "uploads");
+
+if (!Directory.Exists(uploadsPath))
 {
-    FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(
-        Path.Combine(Directory.GetCurrentDirectory(), "uploads")),
-    RequestPath = "/uploads"
-});
+    Directory.CreateDirectory(uploadsPath);
+    app.Logger.LogInformation("Created uploads directory: {UploadsPath}", uploadsPath);
+}
+
+app.Logger.LogInformation("Static file serving configured for uploads at: {UploadsPath}", uploadsPath);
 
 // Enable CORS
 app.UseCors("AllowAngularApp");
