@@ -39,7 +39,9 @@ jobs:
         run: dotnet restore backend.Tests/backend.Tests.csproj
 
       - name: Build solution
-        run: dotnet build --configuration Release --no-restore
+        run: |
+          dotnet build backend/backend.csproj --configuration Release --no-restore
+          dotnet build backend.Tests/backend.Tests.csproj --configuration Release --no-restore
 
       - name: Run tests
         run: |
