@@ -107,6 +107,22 @@
   backdrop-filter: blur(10px);
 }
 
+.form-input[type="time"] {
+  background: rgba(255, 255, 255, 0.1);
+  color-scheme: dark;
+}
+
+.form-input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: grayscale(1) brightness(0.7) contrast(1.2);
+  cursor: pointer;
+  opacity: 0.9;
+}
+
+.form-input[type="time"]::-webkit-inner-spin-button {
+  filter: grayscale(1) brightness(0.7) contrast(1.2);
+  opacity: 0.9;
+}
+
 .form-input:focus {
   outline: none;
   border-color: #ffd700;
