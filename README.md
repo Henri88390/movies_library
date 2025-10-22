@@ -1,5 +1,8 @@
 # Movies Library
 
+[![Backend Tests](https://github.com/Henri88390/movies_library/actions/workflows/backend-tests.yml/badge.svg)](https://github.com/Henri88390/movies_library/actions/workflows/backend-tests.yml)
+[![Backend CI](https://github.com/Henri88390/movies_library/actions/workflows/backend-ci.yml/badge.svg)](https://github.com/Henri88390/movies_library/actions/workflows/backend-ci.yml)
+
 A full-stack application for managing a movie library with a .NET 8 backend API and Angular 19 frontend.
 
 ## Prerequisites
