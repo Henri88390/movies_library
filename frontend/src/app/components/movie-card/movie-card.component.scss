@@ -1,15 +1,38 @@
 .movie-card {
-  background: white;
+  background: linear-gradient(145deg, #1e1e1e 0%, #2a2a2a 100%);
   border-radius: 12px;
   padding: 0;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  border: 1px solid #e8e8e8;
-  transition: all 0.3s ease;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 215, 0, 0.3),
+    0 0 20px rgba(255, 215, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 215, 0, 0.4);
+  transition: all 0.4s ease;
   cursor: pointer;
   height: 100%;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  position: relative;
+}
+
+.movie-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 215, 0, 0.05) 0%,
+    transparent 50%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.movie-card:hover::before {
+  opacity: 1;
 }
 
 .movie-image {
@@ -17,22 +40,37 @@
   height: 200px;
   overflow: hidden;
   flex-shrink: 0;
+  position: relative;
+}
+
+.movie-image::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 30px;
+  background: linear-gradient(to top, rgba(30, 30, 30, 0.8), transparent);
 }
 
 .movie-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.3s ease;
+  transition: transform 0.4s ease;
+  filter: brightness(0.8) contrast(1.1);
 }
 
 .movie-card:hover .movie-image img {
-  transform: scale(1.05);
+  transform: scale(1.08);
+  filter: brightness(0.9) contrast(1.2);
 }
 
 .movie-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  transform: translateY(-8px) scale(1.02);
+  border-color: rgba(255, 215, 0, 0.8);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.8), 0 0 0 2px rgba(255, 215, 0, 0.6),
+    0 0 40px rgba(255, 215, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 .movie-header {
@@ -51,21 +89,25 @@
 }
 
 .delete-btn {
-  background: rgba(220, 53, 69, 0.1);
-  border: 1px solid rgba(220, 53, 69, 0.2);
+  background: rgba(220, 53, 69, 0.15);
+  border: 1px solid rgba(220, 53, 69, 0.3);
   border-radius: 6px;
-  padding: 4px 8px;
-  font-size: 0.9rem;
+  padding: 6px 10px;
+  font-size: 0.85rem;
   cursor: pointer;
   transition: all 0.3s ease;
   opacity: 0.7;
+  color: #ff6b7a;
+  font-weight: 500;
 }
 
 .delete-btn:hover {
-  background: rgba(220, 53, 69, 0.2);
-  border-color: rgba(220, 53, 69, 0.4);
+  background: rgba(220, 53, 69, 0.25);
+  border-color: rgba(220, 53, 69, 0.5);
   opacity: 1;
   transform: scale(1.05);
+  color: #ff4757;
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
 }
 
 .movie-card:hover .delete-btn {
@@ -74,11 +116,12 @@
 
 .movie-header h3 {
   margin: 0;
-  font-size: 1.25rem;
+  font-size: 1.3rem;
   font-weight: 600;
-  color: #2c3e50;
+  color: #e8e6e3;
   flex-grow: 1;
   line-height: 1.4;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 .rating {
@@ -106,6 +149,7 @@
   position: relative;
   line-height: 1;
   font-size: 1.2rem;
+  transition: all 0.2s ease;
 }
 
 .star::before {
@@ -117,33 +161,38 @@
   height: 100%;
   display: inline-block;
   text-align: center;
-  color: #fff; /* default white */
+  color: #555; /* default empty */
 }
 
 .star.full::before {
-  color: #000; /* full black star */
+  color: #ffd700; /* gold star */
+  text-shadow: 0 0 3px rgba(255, 215, 0, 0.5);
 }
 
-/* Half star: left half black, right half white */
+/* Half star: left half gold, right half dark */
 .star.half::before {
-  background: linear-gradient(90deg, #000 50%, #fff 50%);
+  background: linear-gradient(90deg, #ffd700 50%, #555 50%);
   -webkit-background-clip: text;
   background-clip: text;
-  color: transparent; /* let the background gradient show through clipped text */
+  color: transparent;
 }
 
 .star.empty::before {
-  color: #ccc; /* empty star grey */
+  color: #555; /* empty star dark grey */
 }
 
-/* Make uneven ratings visually distinct (e.g., slightly larger and with a subtle glow) */
+/* Make uneven ratings visually distinct */
 .movie-card.uneven .star {
   transform: scale(1.02);
 }
 
+.movie-card:hover .star.full::before {
+  text-shadow: 0 0 6px rgba(255, 215, 0, 0.8);
+}
+
 .rating-text {
   font-size: 0.9rem;
-  color: #7f8c8d;
+  color: #bbb;
   font-weight: 500;
 }
 
@@ -154,24 +203,25 @@
 
 .movie-details p {
   margin: 8px 0;
-  color: #555;
+  color: #bbb;
   line-height: 1.5;
 }
 
 .movie-details strong {
-  color: #2c3e50;
+  color: #e8e6e3;
+  font-weight: 600;
 }
 
 .director {
-  color: #667eea;
+  color: #c9d1ff;
 }
 
 .duration {
-  color: #7f8c8d;
+  color: #c9d1ff;
 }
 
 .duration-unavailable {
-  color: #bbb;
+  color: #888;
   font-style: italic;
 }
 

@@ -16,7 +16,8 @@
 }
 
 .star-wrapper:hover:not(.disabled):not(.readonly) {
-  transform: scale(1.1);
+  transform: scale(1.15);
+  filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.5));
 }
 
 .star-wrapper.disabled,
@@ -35,26 +36,28 @@
 
 .star-icon {
   font-size: 28px;
-  color: #999;
-  transition: color 0.3s ease;
+  color: #444;
+  transition: all 0.3s ease;
   pointer-events: none;
   position: relative;
   z-index: 1;
+  text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
 }
 
 .star.full .star-icon {
-  color: #ffb400;
+  color: #ffd700;
+  text-shadow: 0 0 4px rgba(255, 215, 0, 0.6);
 }
 
 .star.half .star-icon {
-  background: linear-gradient(90deg, #ffb400 50%, #999 50%);
+  background: linear-gradient(90deg, #ffd700 50%, #444 50%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
 .star.empty .star-icon {
-  color: #999;
+  color: #444;
 }
 
 .star-half {
@@ -76,14 +79,15 @@
 
 .rating-text {
   font-size: 14px;
-  color: #666;
+  color: #bbb;
   font-weight: 500;
   min-width: 40px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 /* Hover effects */
 .star-wrapper:not(.disabled):not(.readonly):hover .star-icon {
-  filter: brightness(1.05);
+  filter: brightness(1.2) drop-shadow(0 0 6px rgba(255, 215, 0, 0.7));
 }
 
 /* Disabled state */
@@ -98,7 +102,7 @@
 /* Interactive styles */
 @media (hover: hover) {
   .star-half:hover {
-    background: rgba(255, 215, 0, 0.05);
+    background: rgba(255, 215, 0, 0.1);
     border-radius: 4px;
   }
 }
