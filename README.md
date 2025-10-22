@@ -1,8 +1,5 @@
 # Movies Library
 
-[![Backend Tests](https://github.com/Henri88390/movies_library/actions/workflows/backend-tests.yml/badge.svg)](https://github.com/Henri88390/movies_library/actions/workflows/backend-tests.yml)
-[![Backend CI](https://github.com/Henri88390/movies_library/actions/workflows/backend-ci.yml/badge.svg)](https://github.com/Henri88390/movies_library/actions/workflows/backend-ci.yml)
-
 A full-stack application for managing a movie library with a .NET 8 backend API and Angular 19 frontend.
 
 ## Prerequisites
@@ -55,12 +52,6 @@ dotnet run
 
 The API will be available at: `http://localhost:5176`
 
-#### Alternative port configuration:
-
-```bash
-dotnet run --urls "http://localhost:5176"
-```
-
 ### Backend Features
 
 - RESTful API for movie management (CRUD operations)
@@ -69,26 +60,10 @@ dotnet run --urls "http://localhost:5176"
 - CORS enabled for frontend communication
 - Sample data seeding
 
-### API Endpoints
-
-- `GET /api/movies/movies` - Get all movies
-- `GET /api/movies/movies/{id}` - Get movie by ID
-- `POST /api/movies/movies` - Create new movie
-- `PUT /api/movies/movies/{id}` - Update movie
-- `PATCH /api/movies/movies/{id}` - Partially update movie
-- `DELETE /api/movies/movies/{id}` - Delete movie
-
 ### Swagger Documentation
 
 Once the backend is running, you can access the Swagger UI at:
 **http://localhost:5176/swagger**
-
-The Swagger page provides:
-
-- Interactive API documentation
-- Ability to test API endpoints directly
-- Request/response schemas
-- Authentication details (if applicable)
 
 ## Frontend Setup (Angular)
 
@@ -114,22 +89,7 @@ cd frontend
 npm start
 ```
 
-Or using Angular CLI:
-
-```bash
-cd frontend
-ng serve
-```
-
 The frontend will be available at: `http://localhost:4200`
-
-### Frontend Features
-
-- Responsive movie library interface
-- Movie listing with search and filtering
-- Movie details view
-- Add/Edit/Delete movies functionality
-- Modern Angular 19 with standalone components
 
 ## Running Tests
 
@@ -154,29 +114,6 @@ For test coverage:
 ```bash
 cd backend.Tests
 dotnet test --collect:"XPlat Code Coverage"
-```
-
-### Frontend Tests
-
-To run Angular unit tests:
-
-```bash
-cd frontend
-npm test
-```
-
-Or using Angular CLI:
-
-```bash
-cd frontend
-ng test
-```
-
-To run tests in CI mode (single run):
-
-```bash
-cd frontend
-ng test --watch=false --browsers=ChromeHeadless
 ```
 
 ## Development Workflow
