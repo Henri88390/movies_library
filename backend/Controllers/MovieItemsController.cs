@@ -86,6 +86,11 @@ namespace backend.Controllers
                 {
                     if (TimeSpan.TryParse(duration, out TimeSpan parsedDuration))
                     {
+                        // Validate duration doesn't exceed 10 hours
+                        if (parsedDuration > TimeSpan.FromHours(10))
+                        {
+                            return BadRequest(new { error = "Duration too long", message = "Duration cannot exceed 10 hours" });
+                        }
                         existingMovie.Duration = parsedDuration;
                     }
                     else
@@ -298,6 +303,13 @@ namespace backend.Controllers
                     {
                         _logger.LogWarning("Invalid duration format provided: {Duration}", duration);
                         return BadRequest("Invalid duration format. Use HH:MM:SS format.");
+                    }
+
+                    // Validate duration doesn't exceed 10 hours
+                    if (parsedDuration > TimeSpan.FromHours(10))
+                    {
+                        _logger.LogWarning("Duration exceeds maximum: {Duration}", parsedDuration);
+                        return BadRequest(new { error = "Duration too long", message = "Duration cannot exceed 10 hours" });
                     }
                 }
 

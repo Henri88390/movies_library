@@ -23,6 +23,7 @@ namespace MoviesApi.Models
         [Range(1, 10, ErrorMessage = "Rating must be between 1 and 10")]
         public int? Rating { get; set; }
 
+        [MaxDuration(10)]
         public TimeSpan? Duration { get; set; }
 
         [StringLength(500, ErrorMessage = "Image path cannot exceed 500 characters")]
@@ -42,6 +43,7 @@ namespace MoviesApi.Models
         [Range(1, 10, ErrorMessage = "Rating must be between 1 and 10")]
         public required int Rating { get; set; }
 
+        [MaxDuration(10)]
         public TimeSpan? Duration { get; set; }
 
         [StringLength(500, ErrorMessage = "Image path cannot exceed 500 characters")]
@@ -59,6 +61,7 @@ namespace MoviesApi.Models
         [Range(1, 10, ErrorMessage = "Rating must be between 1 and 10")]
         public int? Rating { get; set; }
 
+        [MaxDuration(10)]
         public TimeSpan? Duration { get; set; }
 
         [StringLength(500, ErrorMessage = "Image path cannot exceed 500 characters")]

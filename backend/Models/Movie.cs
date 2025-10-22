@@ -19,6 +19,7 @@ namespace MoviesApi.Models
         public required int Rating { get; set; }
 
         [Required]
+        [MaxDuration(10)]
         public required TimeSpan Duration { get; set; }
 
         [StringLength(500, ErrorMessage = "Image path cannot exceed 500 characters")]
