@@ -6,6 +6,11 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
+
 jobs:
   backend-tests:
     name: Run Backend Tests
@@ -54,7 +59,9 @@ jobs:
             --collect:"XPlat Code Coverage"
 
       - name: Publish test results
-        uses: EnricoMi/publish-unit-test-result-action@v2
+        uses: dorny/test-reporter@v1
         if: always()
         with:
-          files: TestResults/**/*.trx
+          name: Backend Tests
+          path: TestResults/**/*.trx
+          reporter: dotnet-trx
