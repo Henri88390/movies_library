@@ -65,4 +65,9 @@ export class MovieCardComponent {
     event.stopPropagation(); // Prevent card click when delete button is clicked
     this.deleteClick.emit(this.movie);
   }
+
+  getImageUrl(imagePath: string): string {
+    // Backend serves static files from wwwroot/uploads/images/
+    return `http://localhost:5176${imagePath}`;
+  }
 }

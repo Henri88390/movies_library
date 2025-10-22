@@ -1,4 +1,8 @@
 <div class="movie-card" (click)="onCardClick()">
+  <div class="movie-image" *ngIf="movie.imagePath">
+    <img [src]="getImageUrl(movie.imagePath)" [alt]="movie.name + ' poster'" />
+  </div>
+
   <div class="movie-header">
     <h3>{{ movie.name }}</h3>
     <div class="movie-actions">

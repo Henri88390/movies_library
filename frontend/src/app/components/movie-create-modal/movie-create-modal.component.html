@@ -69,6 +69,31 @@
         >
       </div>
 
+      <div class="form-group">
+        <label for="imageFile">Movie Poster</label>
+        <input
+          id="imageFile"
+          type="file"
+          accept="image/*"
+          class="form-input file-input"
+          (change)="onFileSelected($event)"
+        />
+        <small class="form-help"
+          >Optional: Upload a movie poster (max 5MB)</small
+        >
+
+        <div class="image-preview" *ngIf="imagePreview">
+          <img [src]="imagePreview" alt="Movie poster preview" />
+          <button
+            type="button"
+            class="remove-image-btn"
+            (click)="removeImage()"
+          >
+            ✕ Remove
+          </button>
+        </div>
+      </div>
+
       <div class="error" *ngIf="error">
         <p>❌ {{ error }}</p>
       </div>

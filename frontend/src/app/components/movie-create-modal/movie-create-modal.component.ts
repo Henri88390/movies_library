@@ -24,6 +24,8 @@ export class MovieCreateModalComponent implements OnInit {
   createForm: FormGroup;
   loading = false;
   error: string | null = null;
+  selectedFile: File | null = null;
+  imagePreview: string | null = null;
 
   constructor(
     private movieService: MovieService,
@@ -61,6 +63,8 @@ export class MovieCreateModalComponent implements OnInit {
       duration: '',
     });
     this.error = null;
+    this.selectedFile = null;
+    this.imagePreview = null;
   }
 
   onSave(): void {
@@ -82,24 +86,67 @@ export class MovieCreateModalComponent implements OnInit {
         : null,
     };
 
-    this.movieService.createMovie(newMovie).subscribe({
-      next: (created) => {
-        this.movieCreated.emit(created);
-        this.onCancel();
-        this.loading = false;
-      },
-      error: (err) => {
-        console.error('Error creating movie:', err);
-        this.error = 'Failed to create movie. Please try again.';
-        this.loading = false;
-      },
-    });
+    this.movieService
+      .createMovie(newMovie, this.selectedFile || undefined)
+      .subscribe({
+        next: (created) => {
+          this.movieCreated.emit(created);
+          this.onCancel();
+          this.loading = false;
+        },
+        error: (err) => {
+          console.error('Error creating movie:', err);
+          this.error = 'Failed to create movie. Please try again.';
+          this.loading = false;
+        },
+      });
   }
 
   onCancel(): void {
     this.error = null;
     this.createForm.reset();
+    this.selectedFile = null;
+    this.imagePreview = null;
     this.closeModal.emit();
+  }
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        this.error = 'Please select a valid image file';
+        return;
+      }
+
+      // Validate file size (5MB limit)
+      if (file.size > 5 * 1024 * 1024) {
+        this.error = 'Image file size must be less than 5MB';
+        return;
+      }
+
+      this.selectedFile = file;
+      this.error = null;
+
+      // Create preview
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.imagePreview = reader.result as string;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  removeImage(): void {
+    this.selectedFile = null;
+    this.imagePreview = null;
+    // Reset the file input
+    const fileInput = document.getElementById('imageFile') as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = '';
+    }
   }
 
   markAllFieldsAsTouched(): void {

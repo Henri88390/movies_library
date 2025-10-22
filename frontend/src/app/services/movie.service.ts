@@ -19,8 +19,21 @@ export class MovieService {
     return this.http.get<Movie>(`${this.apiUrl}/${id}`);
   }
 
-  createMovie(movie: Omit<Movie, 'id'>): Observable<Movie> {
-    return this.http.post<Movie>(`${this.apiUrl}/movies`, movie);
+  createMovie(movie: Omit<Movie, 'id'>, imageFile?: File): Observable<Movie> {
+    const formData = new FormData();
+    formData.append('name', movie.name);
+    formData.append('realisator', movie.realisator);
+    formData.append('rating', movie.rating.toString());
+
+    if (movie.duration) {
+      formData.append('duration', movie.duration);
+    }
+
+    if (imageFile) {
+      formData.append('image', imageFile);
+    }
+
+    return this.http.post<Movie>(`${this.apiUrl}/movies`, formData);
   }
 
   updateMovie(id: number, movie: Partial<Movie>): Observable<Movie> {

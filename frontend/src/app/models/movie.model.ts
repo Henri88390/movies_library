@@ -4,4 +4,5 @@ export interface Movie {
   realisator: string;
   rating: number;
   duration: string | null;
+  imagePath?: string | null;
 }
