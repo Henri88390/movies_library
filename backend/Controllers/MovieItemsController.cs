@@ -163,7 +163,7 @@ namespace backend.Controllers
             [FromForm] string? duration = null,
             [FromForm] IFormFile? image = null)
         {
-            _logger.LogInformation("Starting movie creation: Name={MovieName}, Director={Director}, Rating={Rating}, Duration={Duration}, HasImage={HasImage}", 
+            _logger.LogInformation("Starting movie creation: Name={MovieName}, Director={Director}, Rating={Rating}, Duration={Duration}, HasImage={HasImage}",
                 name, realisator, rating, duration, image != null);
 
             try
@@ -184,7 +184,7 @@ namespace backend.Controllers
                 string? imagePath = null;
                 if (image != null)
                 {
-                    _logger.LogDebug("Processing image upload: FileName={FileName}, Size={Size}, ContentType={ContentType}", 
+                    _logger.LogDebug("Processing image upload: FileName={FileName}, Size={Size}, ContentType={ContentType}",
                         image.FileName, image.Length, image.ContentType);
                     imagePath = await _fileUploadService.SaveImageAsync(image);
                     _logger.LogDebug("Image saved successfully: {ImagePath}", imagePath);
@@ -203,7 +203,7 @@ namespace backend.Controllers
                 _logger.LogDebug("Adding movie to database context");
                 _context.MoviesItems.Add(movie);
                 await _context.SaveChangesAsync();
-                
+
                 _logger.LogInformation("Movie created successfully: Id={MovieId}, Name={MovieName}", movie.Id, movie.Name);
                 return CreatedAtAction(nameof(GetMovie), new { id = movie.Id }, movie.MovieItemToDTO());
             }
@@ -214,13 +214,13 @@ namespace backend.Controllers
             }
             catch (DbUpdateException ex)
             {
-                _logger.LogError(ex, "Database error while creating movie: {MovieName}, {Director}, {Rating}. InnerException: {InnerException}", 
+                _logger.LogError(ex, "Database error while creating movie: {MovieName}, {Director}, {Rating}. InnerException: {InnerException}",
                     name, realisator, rating, ex.InnerException?.Message);
                 return StatusCode(500, "Database error occurred while creating the movie.");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Unexpected error while creating movie: {MovieName}, {Director}, {Rating}. Exception Type: {ExceptionType}, Message: {Message}", 
+                _logger.LogError(ex, "Unexpected error while creating movie: {MovieName}, {Director}, {Rating}. Exception Type: {ExceptionType}, Message: {Message}",
                     name, realisator, rating, ex.GetType().Name, ex.Message);
                 return StatusCode(500, "An unexpected error occurred while creating the movie.");
             }
