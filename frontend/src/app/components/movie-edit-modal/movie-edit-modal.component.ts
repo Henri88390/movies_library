@@ -63,8 +63,20 @@ export class MovieEditModalComponent implements OnInit, OnChanges {
       name: ['', [Validators.required, Validators.minLength(1)]],
       realisator: ['', [Validators.required, Validators.minLength(1)]],
       rating: [0, [Validators.required, Validators.min(0), Validators.max(10)]],
-      duration: [''],
+      duration: ['', [this.durationValidator]],
     });
+  }
+
+  // Custom validator for duration
+  durationValidator(control: any) {
+    if (!control.value) return null; // Optional field
+
+    const timeValue = control.value;
+    const [hours, minutes] = timeValue.split(':').map(Number);
+    const totalMinutes = hours * 60 + minutes;
+    const maxMinutes = 10 * 60; // 10 hours in minutes
+
+    return totalMinutes > maxMinutes ? { durationTooLong: true } : null;
   }
 
   initializeForm(): void {
@@ -153,6 +165,9 @@ export class MovieEditModalComponent implements OnInit, OnChanges {
       }
       if (field.errors['max']) {
         return 'Rating must be at most 10';
+      }
+      if (field.errors['durationTooLong']) {
+        return 'Duration cannot exceed 10 hours';
       }
     }
     return null;

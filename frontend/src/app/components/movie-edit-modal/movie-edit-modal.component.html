@@ -53,10 +53,15 @@
           type="time"
           formControlName="duration"
           class="form-input"
+          [class.error]="getFieldError('duration')"
+          max="10:00"
         />
         <small class="form-help"
-          >Optional: Movie duration in hours and minutes</small
+          >Optional: Movie duration in hours and minutes (max 10 hours)</small
         >
+        <div class="field-error" *ngIf="getFieldError('duration')">
+          {{ getFieldError("duration") }}
+        </div>
       </div>
 
       <div class="form-group">
