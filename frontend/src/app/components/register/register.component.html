@@ -1,0 +1,97 @@
+<div class="register-container">
+  <div class="register-card">
+    <div class="register-header">
+      <h1>Movies Library</h1>
+      <h2>Create Account</h2>
+      <p>Join us to manage your movie collection!</p>
+    </div>
+
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form">
+      <!-- Email Field -->
+      <div class="form-group">
+        <label for="email">Email Address *</label>
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+          class="form-input"
+          [class.error]="getFieldError('email')"
+          placeholder="Enter your email"
+        />
+        <div class="field-error" *ngIf="getFieldError('email')">
+          {{ getFieldError('email') }}
+        </div>
+      </div>
+
+      <!-- Password Field -->
+      <div class="form-group">
+        <label for="password">Password *</label>
+        <input
+          id="password"
+          type="password"
+          formControlName="password"
+          class="form-input"
+          [class.error]="getFieldError('password')"
+          placeholder="Enter your password"
+        />
+        <small class="form-help">Password must be at least 6 characters with a digit and lowercase letter</small>
+        
+        <!-- Password Requirements Indicators -->
+        <div *ngIf="passwordErrors && registerForm.get('password')?.touched" class="password-requirements">
+          <div class="requirement" [class.valid]="passwordErrors.isValidLength">
+            <span class="requirement-icon">{{ passwordErrors.isValidLength ? '✓' : '✗' }}</span>
+            At least 6 characters
+          </div>
+          <div class="requirement" [class.valid]="passwordErrors.hasDigit">
+            <span class="requirement-icon">{{ passwordErrors.hasDigit ? '✓' : '✗' }}</span>
+            Contains a digit (0-9)
+          </div>
+          <div class="requirement" [class.valid]="passwordErrors.hasLowercase">
+            <span class="requirement-icon">{{ passwordErrors.hasLowercase ? '✓' : '✗' }}</span>
+            Contains a lowercase letter
+          </div>
+        </div>
+        
+        <div class="field-error" *ngIf="getFieldError('password')">
+          {{ getFieldError('password') }}
+        </div>
+      </div>
+
+      <!-- Confirm Password Field -->
+      <div class="form-group">
+        <label for="confirmPassword">Confirm Password *</label>
+        <input
+          id="confirmPassword"
+          type="password"
+          formControlName="confirmPassword"
+          class="form-input"
+          [class.error]="getFieldError('confirmPassword')"
+          placeholder="Confirm your password"
+        />
+        <div class="field-error" *ngIf="getFieldError('confirmPassword')">
+          {{ getFieldError('confirmPassword') }}
+        </div>
+      </div>
+
+      <!-- Error Message -->
+      <div class="error-message" *ngIf="errorMessage">
+        {{ errorMessage }}
+      </div>
+
+      <!-- Submit Button -->
+      <button
+        type="submit"
+        class="btn-register"
+        [disabled]="isLoading"
+      >
+        <span class="spinner" *ngIf="isLoading"></span>
+        {{ isLoading ? 'Creating Account...' : 'Create Account' }}
+      </button>
+
+      <!-- Login Link -->
+      <div class="login-link">
+        <p>Already have an account? <a routerLink="/login">Sign in here</a></p>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,40 @@
+<nav class="nav-container">
+  <div class="nav-content">
+    <!-- Logo/Brand -->
+    <div class="nav-brand">
+      <a routerLink="/" class="brand-link">
+        <span class="brand-icon">🎬</span>
+        <span class="brand-text">Movie Library</span>
+      </a>
+    </div>
+
+    <!-- Navigation Links -->
+    <div class="nav-links">
+      <a routerLink="/movies" routerLinkActive="active" class="nav-link">
+        <span class="nav-icon">📽️</span>
+        Movies
+      </a>
+    </div>
+
+    <!-- User Menu -->
+    <div class="nav-user">
+      <div *ngIf="authService.user$ | async as user; else guestMenu" class="user-menu">
+        <div class="user-info">
+          <span class="user-icon">👤</span>
+          <span class="user-email">{{ user.email }}</span>
+        </div>
+        <button (click)="logout()" class="logout-btn">
+          <span class="logout-icon">🚪</span>
+          Logout
+        </button>
+      </div>
+      
+      <ng-template #guestMenu>
+        <div class="guest-menu">
+          <a routerLink="/login" routerLinkActive="active" class="auth-link">Login</a>
+          <a routerLink="/register" routerLinkActive="active" class="auth-link register">Register</a>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</nav>
