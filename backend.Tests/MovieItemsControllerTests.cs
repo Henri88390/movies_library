@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
@@ -41,6 +42,14 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>
             newServices.AddDbContext<MoviesContext>(options =>
             {
                 options.UseInMemoryDatabase(_databaseName);
+            });
+
+            // Override authorization policy to allow anonymous access for testing
+            newServices.AddAuthorization(options =>
+            {
+                options.DefaultPolicy = new AuthorizationPolicyBuilder()
+                    .RequireAssertion(_ => true) // Always allow
+                    .Build();
             });
 
             services.Clear();
