@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Movie } from '../../models/movie.model';
+import { AuthService } from '../../services/auth.service';
 import { MovieService } from '../../services/movie.service';
 import { MovieCardComponent } from '../movie-card/movie-card.component';
 import { MovieCreateModalComponent } from '../movie-create-modal/movie-create-modal.component';
@@ -30,7 +31,10 @@ export class MoviesComponent implements OnInit {
   currentMovie: Movie | null = null;
   movieToDelete: Movie | null = null;
 
-  constructor(private movieService: MovieService) {}
+  constructor(
+    private movieService: MovieService,
+    public authService: AuthService
+  ) {}
 
   ngOnInit(): void {
     this.loadMovies();
@@ -46,8 +50,12 @@ export class MoviesComponent implements OnInit {
   }
 
   handleCardClick(movie: Movie) {
-    this.isEditModalOpen = true;
-    this.currentMovie = movie;
+    // Only allow editing for logged-in users
+    if (this.authService.isLoggedIn()) {
+      this.isEditModalOpen = true;
+      this.currentMovie = movie;
+    }
+    // For non-logged users, clicking does nothing (could add view-only modal later)
   }
 
   handleCreateMovie() {

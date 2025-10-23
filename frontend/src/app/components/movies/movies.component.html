@@ -1,11 +1,11 @@
 <div class="movies-container">
-  <header class="movies-header">
-    <h1>🎬 Movies Library</h1>
-    <p>Discover and explore your favorite movies</p>
-    <button class="create-movie-btn" (click)="handleCreateMovie()">
-      ➕ Add New Movie
-    </button>
-  </header>
+  <button
+    *ngIf="authService.user$ | async"
+    class="create-movie-btn"
+    (click)="handleCreateMovie()"
+  >
+    ➕ Add New Movie
+  </button>
 
   <div class="loading" *ngIf="loading">
     <div class="spinner"></div>
@@ -23,6 +23,7 @@
       (cardClick)="handleCardClick(movie)"
       (deleteClick)="handleDeleteClick(movie)"
       [movie]="movie"
+      [isLoggedIn]="!!(authService.user$ | async)"
     >
     </app-movie-card>
   </div>
@@ -30,21 +31,27 @@
   <div class="empty-state" *ngIf="!loading && !error && movies.length === 0">
     <h2>📽️ No movies found</h2>
     <p>Your movie library is empty. Add some movies to get started!</p>
-    <button class="create-movie-btn" (click)="handleCreateMovie()">
+    <button
+      *ngIf="authService.user$ | async"
+      class="create-movie-btn"
+      (click)="handleCreateMovie()"
+    >
       ➕ Create Your First Movie
     </button>
   </div>
 
-  <!-- Edit Modal -->
+  <!-- Edit Modal - Only for logged users -->
   <app-movie-edit-modal
+    *ngIf="authService.user$ | async"
     [isOpen]="isEditModalOpen"
     [movie]="currentMovie"
     (movieUpdated)="handleMovieUpdated($event)"
     (closeModal)="handleCloseModal()"
   />
 
-  <!-- Create Modal -->
+  <!-- Create Modal - Only for logged users -->
   <app-movie-create-modal
+    *ngIf="authService.user$ | async"
     [isOpen]="isCreateModalOpen"
     (movieCreated)="handleMovieCreated($event)"
     (closeModal)="handleCloseCreateModal()"

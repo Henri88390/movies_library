@@ -1,5 +1,6 @@
-<div class="movie-card" (click)="onCardClick()">
+<div class="movie-card" [class.editable]="isLoggedIn" (click)="onCardClick()">
   <button
+    *ngIf="isLoggedIn"
     class="delete-btn"
     (click)="onDeleteClick($event)"
     title="Delete movie"

@@ -11,6 +11,7 @@ import { Movie } from '../../models/movie.model';
 })
 export class MovieCardComponent {
   @Input({ required: true }) movie!: Movie;
+  @Input() isLoggedIn: boolean = false;
   @Output() cardClick = new EventEmitter<Movie>();
   @Output() deleteClick = new EventEmitter<Movie>();
 
