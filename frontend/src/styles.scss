@@ -5,6 +5,18 @@
   box-sizing: border-box;
 }
 
+/* Ensure root element has dark background */
+:root {
+  background-color: #0a0a0a;
+}
+
+html {
+  background: #0a0a0a;
+  min-height: 100%;
+  /* Prevent white background during overscroll bounce on mobile */
+  background-color: #0a0a0a !important;
+}
+
 body {
   font-family: "Segoe UI", "Roboto", "Arial", sans-serif;
   background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0f0f0f 100%);
@@ -13,6 +25,12 @@ body {
   line-height: 1.6;
   min-height: 100vh;
   position: relative;
+  margin: 0;
+  padding: 0;
+  /* Ensure dark background extends beyond viewport */
+  background-color: #0a0a0a;
+  /* Prevent overscroll bounce showing white background */
+  overscroll-behavior: none;
 }
 
 /* Dark cinema background pattern */
