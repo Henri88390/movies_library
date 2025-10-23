@@ -30,6 +30,7 @@ public class LoginDto
 public class AuthResponseDto
 {
     public string Token { get; set; } = string.Empty;
+    public string? RefreshToken { get; set; }
     public string Email { get; set; } = string.Empty;
     public DateTime ExpiresAt { get; set; }
 }
@@ -40,4 +41,9 @@ public class UserDto
     public string Email { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
     public DateTime? LastLoginAt { get; set; }
+}
+
+public class RefreshTokenRequestDto
+{
+    public string RefreshToken { get; set; } = string.Empty;
 }

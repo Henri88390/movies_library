@@ -18,8 +18,17 @@
 
     <!-- User Menu -->
     <div class="nav-user">
+      <!-- Loading state -->
+      <div *ngIf="authService.loading$ | async" class="loading-menu">
+        <span class="loading-spinner">⏳</span>
+        <span class="loading-text">Loading...</span>
+      </div>
+
+      <!-- User authenticated -->
       <div
-        *ngIf="authService.user$ | async as user; else guestMenu"
+        *ngIf="
+          !(authService.loading$ | async) && (authService.user$ | async) as user
+        "
         class="user-menu"
       >
         <div class="user-info">
@@ -32,19 +41,21 @@
         </button>
       </div>
 
-      <ng-template #guestMenu>
-        <div class="guest-menu">
-          <a routerLink="/login" routerLinkActive="active" class="auth-link"
-            >Login</a
-          >
-          <a
-            routerLink="/register"
-            routerLinkActive="active"
-            class="auth-link register"
-            >Register</a
-          >
-        </div>
-      </ng-template>
+      <!-- Guest user (not authenticated and not loading) -->
+      <div
+        *ngIf="!(authService.loading$ | async) && !(authService.user$ | async)"
+        class="guest-menu"
+      >
+        <a routerLink="/login" routerLinkActive="active" class="auth-link"
+          >Login</a
+        >
+        <a
+          routerLink="/register"
+          routerLinkActive="active"
+          class="auth-link register"
+          >Register</a
+        >
+      </div>
     </div>
   </div>
 </nav>

@@ -208,6 +208,36 @@
   border-color: rgba(255, 215, 0, 0.4);
 }
 
+/* Loading Menu */
+.loading-menu {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #ccc;
+  padding: 8px 16px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.loading-spinner {
+  font-size: 1.2rem;
+  animation: spin 1s linear infinite;
+}
+
+.loading-text {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .nav-content {

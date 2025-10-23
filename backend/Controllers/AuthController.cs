@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using backend.DTOs;
 using backend.Models;
 using backend.Services;
@@ -54,12 +55,19 @@ public class AuthController : ControllerBase
             }
 
             var token = _jwtService.GenerateToken(user);
+            var refreshToken = _jwtService.GenerateRefreshToken();
+
+            // Store refresh token
+            user.RefreshToken = refreshToken;
+            user.RefreshTokenExpiryTime = _jwtService.GetRefreshTokenExpiryTime();
+            await _userManager.UpdateAsync(user);
 
             return Ok(new AuthResponseDto
             {
                 Token = token,
+                RefreshToken = refreshToken,
                 Email = user.Email!,
-                ExpiresAt = DateTime.UtcNow.AddHours(24)
+                ExpiresAt = _jwtService.GetTokenExpiryTime()
             });
         }
         catch (Exception ex)
@@ -88,15 +96,22 @@ public class AuthController : ControllerBase
 
             // Update last login time
             user.LastLoginAt = DateTime.UtcNow;
-            await _userManager.UpdateAsync(user);
 
+            // Generate tokens
             var token = _jwtService.GenerateToken(user);
+            var refreshToken = _jwtService.GenerateRefreshToken();
+
+            // Store refresh token
+            user.RefreshToken = refreshToken;
+            user.RefreshTokenExpiryTime = _jwtService.GetRefreshTokenExpiryTime();
+            await _userManager.UpdateAsync(user);
 
             return Ok(new AuthResponseDto
             {
                 Token = token,
+                RefreshToken = refreshToken,
                 Email = user.Email!,
-                ExpiresAt = DateTime.UtcNow.AddHours(24)
+                ExpiresAt = _jwtService.GetTokenExpiryTime()
             });
         }
         catch (Exception ex)
@@ -140,30 +155,59 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("refresh")]
-    [Authorize]
-    public async Task<ActionResult<AuthResponseDto>> RefreshToken()
+    [AllowAnonymous] // No JWT required, we validate refresh token instead
+    public async Task<ActionResult<AuthResponseDto>> RefreshToken([FromBody] RefreshTokenRequestDto request)
     {
         try
         {
-            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userId))
+            _logger.LogInformation("Refresh token request received");
+
+            if (string.IsNullOrEmpty(request.RefreshToken))
             {
-                return Unauthorized(new { message = "Invalid token." });
+                _logger.LogWarning("Refresh token request missing refresh token");
+                return BadRequest(new { message = "Refresh token is required." });
             }
 
-            var user = await _userManager.FindByIdAsync(userId);
+            _logger.LogInformation("Looking for user with refresh token: {RefreshToken}",
+                request.RefreshToken.Substring(0, Math.Min(10, request.RefreshToken.Length)) + "...");
+
+            // Find user by refresh token
+            var user = await _userManager.Users
+                .FirstOrDefaultAsync(u => u.RefreshToken == request.RefreshToken);
+
             if (user == null)
             {
-                return NotFound(new { message = "User not found." });
+                _logger.LogWarning("No user found with provided refresh token");
+                return Unauthorized(new { message = "Invalid refresh token." });
             }
 
+            _logger.LogInformation("User found: {UserId}, checking token expiry", user.Id);
+
+            // Check if refresh token is still valid
+            if (user.RefreshTokenExpiryTime <= DateTime.UtcNow)
+            {
+                _logger.LogWarning("Refresh token expired for user {UserId}. Expiry: {ExpiryTime}, Now: {CurrentTime}",
+                    user.Id, user.RefreshTokenExpiryTime, DateTime.UtcNow);
+                return Unauthorized(new { message = "Refresh token expired." });
+            }
+
+            _logger.LogInformation("Refresh token valid, generating new JWT for user {UserId}", user.Id);
+
+            // Generate new JWT token only (no refresh token rotation)
             var token = _jwtService.GenerateToken(user);
+
+            // Keep the same refresh token, just extend its expiry
+            user.RefreshTokenExpiryTime = _jwtService.GetRefreshTokenExpiryTime();
+            await _userManager.UpdateAsync(user);
+
+            _logger.LogInformation("Successfully refreshed JWT for user {UserId}", user.Id);
 
             return Ok(new AuthResponseDto
             {
                 Token = token,
+                RefreshToken = user.RefreshToken, // Return SAME refresh token (no rotation)
                 Email = user.Email!,
-                ExpiresAt = DateTime.UtcNow.AddHours(24)
+                ExpiresAt = _jwtService.GetTokenExpiryTime()
             });
         }
         catch (Exception ex)
@@ -179,6 +223,19 @@ public class AuthController : ControllerBase
     {
         try
         {
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (!string.IsNullOrEmpty(userId))
+            {
+                var user = await _userManager.FindByIdAsync(userId);
+                if (user != null)
+                {
+                    // Invalidate refresh token
+                    user.RefreshToken = null;
+                    user.RefreshTokenExpiryTime = null;
+                    await _userManager.UpdateAsync(user);
+                }
+            }
+
             await _signInManager.SignOutAsync();
             return Ok(new { message = "Logged out successfully." });
         }
