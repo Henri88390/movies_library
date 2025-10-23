@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +14,7 @@ namespace backend.Controllers
 {
     [Route("api/movies")]
     [ApiController]
+    [Authorize] // Require authorization by default
     public class MovieItemsController : ControllerBase
     {
         private readonly MoviesContext _context;
@@ -26,15 +28,17 @@ namespace backend.Controllers
             _logger = logger;
         }
 
-        // GET: api/MovieItems
+        // GET: api/movies/movies
         [HttpGet("movies")]
+        [AllowAnonymous] // Allow anonymous users to view all movies
         public async Task<ActionResult<IEnumerable<MovieGetDTO>>> GetMoviesItems()
         {
             return await _context.MoviesItems.Select(x => x.MovieItemToDTO()).ToListAsync();
         }
 
-        // GET: api/MovieItems/5
+        // GET: api/movies/5
         [HttpGet("{id}")]
+        [AllowAnonymous] // Allow anonymous users to view individual movies
         public async Task<ActionResult<Movie>> GetMovie(long id)
         {
             var movie = await _context.MoviesItems.FindAsync(id);
