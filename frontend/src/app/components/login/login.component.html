@@ -19,7 +19,7 @@
           placeholder="Enter your email"
         />
         <div class="field-error" *ngIf="getFieldError('email')">
-          {{ getFieldError('email') }}
+          {{ getFieldError("email") }}
         </div>
       </div>
 
@@ -34,25 +34,34 @@
           [class.error]="getFieldError('password')"
           placeholder="Enter your password"
         />
-        
+
         <!-- Password Requirements Indicators (only show when invalid) -->
-        <div *ngIf="passwordErrors && loginForm.get('password')?.touched" class="password-requirements">
+        <div
+          *ngIf="passwordErrors && loginForm.get('password')?.touched"
+          class="password-requirements"
+        >
           <div class="requirement" [class.valid]="passwordErrors.isValidLength">
-            <span class="requirement-icon">{{ passwordErrors.isValidLength ? '✓' : '✗' }}</span>
+            <span class="requirement-icon">{{
+              passwordErrors.isValidLength ? "✓" : "✗"
+            }}</span>
             At least 6 characters
           </div>
           <div class="requirement" [class.valid]="passwordErrors.hasDigit">
-            <span class="requirement-icon">{{ passwordErrors.hasDigit ? '✓' : '✗' }}</span>
+            <span class="requirement-icon">{{
+              passwordErrors.hasDigit ? "✓" : "✗"
+            }}</span>
             Contains a digit (0-9)
           </div>
           <div class="requirement" [class.valid]="passwordErrors.hasLowercase">
-            <span class="requirement-icon">{{ passwordErrors.hasLowercase ? '✓' : '✗' }}</span>
+            <span class="requirement-icon">{{
+              passwordErrors.hasLowercase ? "✓" : "✗"
+            }}</span>
             Contains a lowercase letter
           </div>
         </div>
-        
+
         <div class="field-error" *ngIf="getFieldError('password')">
-          {{ getFieldError('password') }}
+          {{ getFieldError("password") }}
         </div>
       </div>
 
@@ -62,18 +71,16 @@
       </div>
 
       <!-- Submit Button -->
-      <button
-        type="submit"
-        class="btn-login"
-        [disabled]="isLoading"
-      >
+      <button type="submit" class="btn-login" [disabled]="isLoading">
         <span class="spinner" *ngIf="isLoading"></span>
-        {{ isLoading ? 'Signing In...' : 'Sign In' }}
+        {{ isLoading ? "Signing In..." : "Sign In" }}
       </button>
 
       <!-- Register Link -->
       <div class="register-link">
-        <p>Don't have an account? <a routerLink="/register">Create one here</a></p>
+        <p>
+          Don't have an account? <a routerLink="/register">Create one here</a>
+        </p>
       </div>
     </form>
   </div>

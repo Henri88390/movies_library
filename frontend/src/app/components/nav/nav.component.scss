@@ -46,8 +46,13 @@
 }
 
 @keyframes pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.1); }
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
 }
 
 .brand-text {
@@ -209,19 +214,19 @@
     padding: 12px 16px;
     gap: 16px;
   }
-  
+
   .nav-links {
     margin-left: 24px;
   }
-  
+
   .brand-text {
     display: none;
   }
-  
+
   .user-info .user-email {
     display: none;
   }
-  
+
   .nav-link,
   .auth-link {
     padding: 8px 12px;
@@ -234,14 +239,14 @@
     flex-wrap: wrap;
     gap: 12px;
   }
-  
+
   .nav-links {
     order: 3;
     flex-basis: 100%;
     margin-left: 0;
     justify-content: center;
   }
-  
+
   .nav-user {
     order: 2;
   }

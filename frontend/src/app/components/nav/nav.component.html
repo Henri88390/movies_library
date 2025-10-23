@@ -18,7 +18,10 @@
 
     <!-- User Menu -->
     <div class="nav-user">
-      <div *ngIf="authService.user$ | async as user; else guestMenu" class="user-menu">
+      <div
+        *ngIf="authService.user$ | async as user; else guestMenu"
+        class="user-menu"
+      >
         <div class="user-info">
           <span class="user-icon">👤</span>
           <span class="user-email">{{ user.email }}</span>
@@ -28,11 +31,18 @@
           Logout
         </button>
       </div>
-      
+
       <ng-template #guestMenu>
         <div class="guest-menu">
-          <a routerLink="/login" routerLinkActive="active" class="auth-link">Login</a>
-          <a routerLink="/register" routerLinkActive="active" class="auth-link register">Register</a>
+          <a routerLink="/login" routerLinkActive="active" class="auth-link"
+            >Login</a
+          >
+          <a
+            routerLink="/register"
+            routerLinkActive="active"
+            class="auth-link register"
+            >Register</a
+          >
         </div>
       </ng-template>
     </div>

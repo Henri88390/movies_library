@@ -7,7 +7,7 @@ import { NavComponent } from './components/nav/nav.component';
   standalone: true,
   imports: [RouterOutlet, NavComponent],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  styleUrl: './app.component.scss',
 })
 export class AppComponent {
   title = 'Movies Library';

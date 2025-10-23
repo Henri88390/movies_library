@@ -1,14 +1,14 @@
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from '../services/auth.service';
 import { map } from 'rxjs/operators';
+import { AuthService } from '../services/auth.service';
 
 export const authGuard = () => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
   return authService.user$.pipe(
-    map(user => {
+    map((user) => {
       if (user) {
         return true;
       } else {
@@ -24,7 +24,7 @@ export const guestGuard = () => {
   const router = inject(Router);
 
   return authService.user$.pipe(
-    map(user => {
+    map((user) => {
       if (!user) {
         return true;
       } else {

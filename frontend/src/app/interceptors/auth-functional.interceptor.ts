@@ -1,7 +1,22 @@
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpEvent,
+  HttpHandlerFn,
+  HttpInterceptorFn,
+  HttpRequest,
+} from '@angular/common/http';
 import { inject } from '@angular/core';
-import { HttpInterceptorFn, HttpErrorResponse, HttpRequest, HttpHandlerFn, HttpEvent, HttpClient } from '@angular/common/http';
-import { Observable, catchError, switchMap, throwError, BehaviorSubject, filter, take } from 'rxjs';
 import { Router } from '@angular/router';
+import {
+  BehaviorSubject,
+  Observable,
+  catchError,
+  filter,
+  switchMap,
+  take,
+  throwError,
+} from 'rxjs';
 
 let isRefreshing = false;
 let refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
@@ -16,7 +31,7 @@ function getToken(): string | null {
 function isTokenValid(): boolean {
   const expiresAt = localStorage.getItem(TOKEN_EXPIRES_KEY);
   if (!expiresAt) return false;
-  
+
   const expirationDate = new Date(expiresAt);
   const now = new Date();
   return expirationDate.getTime() > now.getTime();
@@ -33,7 +48,10 @@ function clearToken(): void {
   localStorage.removeItem('user_email');
 }
 
-export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>, next: HttpHandlerFn): Observable<HttpEvent<unknown>> => {
+export const authInterceptor: HttpInterceptorFn = (
+  req: HttpRequest<unknown>,
+  next: HttpHandlerFn
+): Observable<HttpEvent<unknown>> => {
   const router = inject(Router);
 
   // Skip auth for login and register requests
@@ -46,8 +64,8 @@ export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>, ne
   if (token && isTokenValid()) {
     req = req.clone({
       setHeaders: {
-        Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     });
   }
 
@@ -61,30 +79,34 @@ export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>, ne
   );
 };
 
-function handle401Error(req: HttpRequest<unknown>, next: HttpHandlerFn, router: Router): Observable<HttpEvent<unknown>> {
+function handle401Error(
+  req: HttpRequest<unknown>,
+  next: HttpHandlerFn,
+  router: Router
+): Observable<HttpEvent<unknown>> {
   if (!isRefreshing) {
     isRefreshing = true;
     refreshTokenSubject.next(null);
 
     // Create a new HttpClient instance to avoid circular dependency
     const http = inject(HttpClient);
-    
+
     return http.post<any>('http://localhost:5176/api/auth/refresh', {}).pipe(
       switchMap((response: any) => {
         isRefreshing = false;
-        
+
         if (response.token) {
           setToken(response.token, response.expiresAt);
           refreshTokenSubject.next(response.token);
-          
+
           req = req.clone({
             setHeaders: {
-              Authorization: `Bearer ${response.token}`
-            }
+              Authorization: `Bearer ${response.token}`,
+            },
           });
           return next(req);
         }
-        
+
         // If refresh failed, redirect to login
         clearToken();
         router.navigate(['/login']);
@@ -100,13 +122,13 @@ function handle401Error(req: HttpRequest<unknown>, next: HttpHandlerFn, router: 
   } else {
     // Wait for the refresh to complete
     return refreshTokenSubject.pipe(
-      filter(token => token != null),
+      filter((token) => token != null),
       take(1),
-      switchMap(token => {
+      switchMap((token) => {
         req = req.clone({
           setHeaders: {
-            Authorization: `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         });
         return next(req);
       })

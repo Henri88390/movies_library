@@ -15,9 +15,7 @@
   padding: 0;
   max-width: 420px;
   width: 100%;
-  box-shadow: 
-    0 25px 80px rgba(0, 0, 0, 0.8),
-    0 0 40px rgba(255, 215, 0, 0.1),
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.8), 0 0 40px rgba(255, 215, 0, 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
   animation: modalSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
@@ -222,8 +220,12 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .login-link {
@@ -255,20 +257,20 @@
   .register-container {
     padding: 16px;
   }
-  
+
   .register-card {
     max-width: 100%;
   }
-  
+
   .register-header,
   .register-form {
     padding: 24px;
   }
-  
+
   .register-header h1 {
     font-size: 1.5rem;
   }
-  
+
   .register-header h2 {
     font-size: 1.2rem;
   }

@@ -1,6 +1,11 @@
-import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component } from '@angular/core';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
@@ -9,7 +14,7 @@ import { AuthService } from '../../services/auth.service';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.scss'
+  styleUrl: './login.component.scss',
 })
 export class LoginComponent {
   loginForm!: FormGroup;
@@ -27,15 +32,14 @@ export class LoginComponent {
   private initializeForm(): void {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [
-        Validators.required,
-        Validators.minLength(6),
-        this.passwordValidator
-      ]]
+      password: [
+        '',
+        [Validators.required, Validators.minLength(6), this.passwordValidator],
+      ],
     });
   }
 
-  private passwordValidator(control: any): {[key: string]: any} | null {
+  private passwordValidator(control: any): { [key: string]: any } | null {
     const value = control.value;
     if (!value) {
       return null;
@@ -52,8 +56,8 @@ export class LoginComponent {
         passwordRequirements: {
           hasDigit,
           hasLowercase,
-          isValidLength
-        }
+          isValidLength,
+        },
       };
     }
 
@@ -82,12 +86,13 @@ export class LoginComponent {
         },
         error: (error) => {
           console.error('Login failed:', error);
-          this.errorMessage = error.error?.message || 'Login failed. Please try again.';
+          this.errorMessage =
+            error.error?.message || 'Login failed. Please try again.';
           this.isLoading = false;
         },
         complete: () => {
           this.isLoading = false;
-        }
+        },
       });
     } else {
       this.markFormGroupTouched();
@@ -95,7 +100,7 @@ export class LoginComponent {
   }
 
   private markFormGroupTouched(): void {
-    Object.keys(this.loginForm.controls).forEach(key => {
+    Object.keys(this.loginForm.controls).forEach((key) => {
       const control = this.loginForm.get(key);
       if (control) {
         control.markAsTouched();
@@ -107,7 +112,9 @@ export class LoginComponent {
     const field = this.loginForm.get(fieldName);
     if (field && field.touched && field.errors) {
       if (field.errors['required']) {
-        return `${fieldName.charAt(0).toUpperCase() + fieldName.slice(1)} is required`;
+        return `${
+          fieldName.charAt(0).toUpperCase() + fieldName.slice(1)
+        } is required`;
       }
       if (field.errors['email']) {
         return 'Please enter a valid email address';
