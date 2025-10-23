@@ -1,5 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  HostListener,
+  Input,
+  Output,
+} from '@angular/core';
 import { Movie } from '../../models/movie.model';
 import { MovieService } from '../../services/movie.service';
 
@@ -20,6 +26,13 @@ export class MovieDeleteModalComponent {
   error: string | null = null;
 
   constructor(private movieService: MovieService) {}
+
+  @HostListener('document:keydown.escape', ['$event'])
+  onEscapeKey(event: KeyboardEvent): void {
+    if (this.isOpen && !this.loading) {
+      this.onCancel();
+    }
+  }
 
   onDelete(): void {
     if (!this.movie) return;
